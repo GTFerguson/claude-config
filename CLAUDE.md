@@ -1,7 +1,8 @@
 # Claude Setup
 
-Portable Claude Code configuration. Contains rules, prompts, and execution playbook.
+Portable Claude Code configuration.
 
 - `rules/` — Global coding standards (symlink to `~/.claude/rules/`)
-- `prompts/` — Self-guiding methodology prompts (`code-review.md`, `codebase-docs.md`)
-- `playbook/` — Orchestrated remediation execution with quality gates
+- `skills/` — Claude Code skills (`/review-codebase`, `/document-codebase`)
+- `prompts/tasks/` — Operation prompts (security fix, test gen, migration, extraction)
+- `prompts/orchestration/` — Multi-session scaffolding (quality gates, context management)
