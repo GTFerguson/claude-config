@@ -1,65 +1,37 @@
-# Codebase Audit Framework
+# Prompt Toolbox
 
-A prompt-driven framework for systematic codebase audits and remediation. Point it at a codebase, and the prompts guide the AI through a complete audit — from initial scan to component-level security review to actionable remediation plan.
+A collection of battle-tested prompts for codebase analysis, documentation, and remediation. Each prompt is a self-contained methodology that guides AI through a complex multi-step task.
 
-## Structure
+## Prompts
 
-```
-prompts/                           # Core audit methodology
-├── code-audit.md                  # Multi-codebase audit orchestrator
-│                                    Phase 1: Individual audits
-│                                    Phase 2: Cross-codebase analysis
-│                                    Phase 3: Consolidation proposals
-└── code-review.md                 # Systematic code quality review
-                                     Phase 1: Discovery & analysis plan
-                                     Phase 2: Output structure
-                                     Phase 3: Per-component 4-dimension review
-                                     Phase 4: Integration analysis
-                                     Phase 5: Recommendations
-                                     Phase 6: Executive synthesis
+| Prompt | Purpose |
+|--------|---------|
+| [code-review](prompts/code-review.md) | Systematic code quality review — security, SOLID, performance, error handling. Produces scored component reviews, issue tracking, and remediation roadmap. |
+| [codebase-docs](prompts/codebase-docs.md) | Generate architecture documentation in a standard `docs/` structure from a codebase scan. Also supports cross-project analysis and consolidation proposals. |
 
-playbook/                          # Execution methodology (post-audit)
-├── README.md                      # Quick start
-├── architecture.md                # 3-layer orchestrator hierarchy
-├── quality-gates.md               # Checkpoint definitions
-├── context-management.md          # Managing AI context across sessions
-├── docs-protocol.md               # State file maintenance
-└── prompts/                       # Task-level prompt templates
-    ├── master-orchestrator-init.md
-    ├── phase-orchestrator-init.md
-    ├── security-fix.md
-    ├── package-extraction.md
-    ├── component-migration.md
-    ├── test-generation.md
-    └── context-restore.md
-```
+## Playbook
 
-## Two Layers
+Execution methodology for acting on audit findings — orchestrating multi-phase remediation programs across sessions.
 
-### 1. Audit (`prompts/`)
+| Document | Purpose |
+|----------|---------|
+| [playbook/README](playbook/README.md) | Quick start |
+| [playbook/architecture](playbook/architecture.md) | 3-layer orchestrator hierarchy |
+| [playbook/quality-gates](playbook/quality-gates.md) | Checkpoint definitions |
+| [playbook/context-management](playbook/context-management.md) | Managing AI context across sessions |
 
-**`code-audit.md`** — For auditing one or more codebases. Identifies architecture patterns, duplication, and consolidation opportunities. Produces audit reports, cross-codebase analysis, and improvement proposals.
+### Task Prompts
 
-**`code-review.md`** — For deep-diving into a single codebase. Systematic component-by-component review covering security, SOLID principles, code smells, performance, and error handling. Produces scored component reviews, issue tracking by severity, integration analysis, and a remediation roadmap.
-
-### 2. Execution (`playbook/`)
-
-Once you have audit findings, the playbook manages the remediation work. It uses a hierarchical orchestrator pattern (Master → Phase → Task) with quality gates, state management across sessions, and specific prompt templates for common tasks (security fixes, package extraction, migration, test generation).
-
-## Usage
-
-### Quick audit of a single codebase
-
-Use `prompts/code-review.md`. Point the AI at your codebase, and the prompt guides it through discovery, component reviews, integration analysis, and synthesis.
-
-### Multi-codebase audit
-
-Use `prompts/code-audit.md`. Define your codebases, and the prompt orchestrates individual audits, cross-codebase comparison, and consolidation recommendations.
-
-### Remediation program
-
-After an audit, use the `playbook/`. Initialize a Master Orchestrator, define phases from the audit findings, and use the task prompts to execute fixes, extractions, and migrations.
+| Prompt | Purpose |
+|--------|---------|
+| [security-fix](playbook/prompts/security-fix.md) | Fix a specific security vulnerability with checklist and common patterns |
+| [package-extraction](playbook/prompts/package-extraction.md) | Extract shared code into a reusable package |
+| [component-migration](playbook/prompts/component-migration.md) | Migrate a component to use shared packages |
+| [test-generation](playbook/prompts/test-generation.md) | Generate tests for a component |
+| [master-orchestrator-init](playbook/prompts/master-orchestrator-init.md) | Initialize a remediation program |
+| [phase-orchestrator-init](playbook/prompts/phase-orchestrator-init.md) | Initialize a phase within a program |
+| [context-restore](playbook/prompts/context-restore.md) | Restore context after a session break |
 
 ## Origin
 
-These prompts were battle-tested across multiple real codebase audits, producing hundreds of pages of structured findings across 6 codebases. The methodology, scoring rubrics, and output structures are proven — they're extracted and generalized here for reuse.
+These prompts were refined across multiple real codebase audits producing hundreds of pages of structured findings. The code review methodology in particular was iterated across 6 codebases and proven to consistently produce actionable, evidence-backed output.

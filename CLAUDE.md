@@ -1,19 +1,20 @@
-# Codebase Audit Framework
+# Prompt Toolbox
 
-This repo contains prompts and methodology for AI-driven codebase audits. The prompts are in `prompts/` (audit methodology) and `playbook/` (execution methodology).
+Collection of reusable prompts for codebase analysis, documentation generation, and remediation execution.
 
-## Running an Audit
+## Prompts
 
-1. Start with `prompts/code-review.md` for a single codebase, or `prompts/code-audit.md` for multiple codebases
-2. The prompts are self-guiding — they define what to do, how to do it, what to output, and quality criteria
-3. Output goes into an `output/` directory (create as needed)
+- `prompts/code-review.md` — Systematic code quality review methodology
+- `prompts/codebase-docs.md` — Generate architecture docs in standard `docs/` structure
+- `playbook/` — Orchestrated remediation execution with quality gates
 
 ## Output Conventions
 
+All prompt output follows Obsidian-compatible markdown:
+
 - YAML frontmatter on every document (title, created, updated, status, tags)
-- Blank line before all tables (Obsidian requirement)
-- Obsidian wiki-links `[[path/to/doc]]` for cross-references
+- Blank line before all tables
+- Wiki-links `[[path/to/doc]]` for cross-references
 - Callouts: `> [!CRITICAL]`, `> [!WARNING]`, `> [!TIP]`, `> [!NOTE]`, `> [!IMPORTANT]`
-- Mermaid diagrams for architecture, data flow, dependency graphs, timelines
-- Issue IDs: `CRIT-001`, `HIGH-001`, `MED-001`, `LOW-001`
-- Code evidence always includes file path and line number
+- Mermaid diagrams for architecture, data flow, dependency graphs
+- Code evidence includes file path and line number
