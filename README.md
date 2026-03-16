@@ -5,11 +5,29 @@ Portable Claude Code configuration — rules, skills, and prompts. Clone onto an
 ## Structure
 
 ```
-rules/                              # Global coding standards
-skills/                             # Claude Code skills (/slash-commands)
+rules/                              # → ~/.claude/rules/
+├── code-comments.md
+├── code-intel.md
+├── markdown-formatting.md
+├── proven-documentation.md
+└── test-driven-debugging.md
+
+skills/                             # → ~/.claude/skills/
+├── review-codebase/SKILL.md        # /review-codebase
+└── document-codebase/SKILL.md      # /document-codebase
+
 prompts/
 ├── tasks/                          # Specific operation prompts
+│   ├── security-fix.md
+│   ├── test-generation.md
+│   ├── package-extraction.md
+│   └── component-migration.md
 └── orchestration/                  # Multi-session scaffolding
+    ├── quality-gates.md
+    ├── context-management.md
+    ├── context-restore.md
+    ├── master-orchestrator-init.md
+    └── phase-orchestrator-init.md
 ```
 
 ## Installation
@@ -17,8 +35,9 @@ prompts/
 ```bash
 git clone git@github.com:GTFerguson/claude-setup.git ~/.claude-setup
 
-# Symlink rules
+# Symlink rules and skills into Claude Code
 ln -s ~/.claude-setup/rules/* ~/.claude/rules/
+ln -s ~/.claude-setup/skills/* ~/.claude/skills/
 ```
 
 ## Rules
@@ -35,8 +54,8 @@ ln -s ~/.claude-setup/rules/* ~/.claude/rules/
 
 | Skill | Purpose |
 |-------|---------|
-| [/review-codebase](skills/review-codebase.md) | Systematic code quality review — security, SOLID, performance, scoring, remediation roadmap |
-| [/document-codebase](skills/document-codebase.md) | Generate architecture docs in standard `docs/` structure from codebase scan |
+| [/review-codebase](skills/review-codebase/SKILL.md) | Systematic code quality review — security, SOLID, performance, scoring, remediation roadmap |
+| [/document-codebase](skills/document-codebase/SKILL.md) | Generate architecture docs in standard `docs/` structure from codebase scan |
 
 ## Task Prompts
 

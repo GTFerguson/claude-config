@@ -1,16 +1,17 @@
-# Systematic Code Review Prompt
+---
+name: review-codebase
+description: Systematic code quality review of a codebase. Use when the user asks to review, audit, or assess code quality — or when a codebase needs security, performance, or architecture analysis.
+---
 
-> **Usage:** This prompt provides a detailed methodology for deep code quality analysis. Use it after or alongside the initial audit ([[code-audit]]) for thorough code reviews.
+# Systematic Code Review
 
-## Overview
-
-This prompt guides a systematic code review, analysing each component for security, software engineering principles, performance, and code quality. It is designed to run in phases: first a discovery pass to create a dynamic analysis plan, then per-component deep reviews, integration analysis, and final synthesis.
+You are performing a systematic code review, analysing each component for security, software engineering principles, performance, and code quality. Work through the phases below in order.
 
 ---
 
 ## Phase 1: Discovery
 
-Before analysis begins, investigate the codebase to understand its shape.
+Investigate the codebase to understand its shape before diving into reviews.
 
 ### 1. Documentation Review
 
@@ -27,7 +28,7 @@ Before analysis begins, investigate the codebase to understand its shape.
 
 ### 3. Create Dynamic Analysis Plan
 
-Based on discovery, produce `00-analysis-plan.md` containing:
+Produce `00-analysis-plan.md` containing:
 
 - **Component inventory** — Every distinct component with: number, name, location, file count, approximate LOC, priority (Critical/High/Medium/Low), and review focus areas
 - **Priority criteria**: Critical = auth, database, core APIs (security breach/data loss risk); High = business logic, AI/ML, external integrations; Medium = admin, frontend clients, config; Low = scripts, static pages, types
@@ -43,7 +44,7 @@ Based on discovery, produce `00-analysis-plan.md` containing:
 All review output goes into a structured directory:
 
 ```
-{output-dir}/code-review/{project}/
+code-review/{project}/
 ├── README.md                    # Navigation index with scores and links
 ├── 00-analysis-plan.md          # From Phase 1
 ├── 00-executive-summary.md      # From Phase 6
@@ -283,6 +284,16 @@ Long-term structural changes:
 
 ---
 
+## Document Conventions
+
+- **Frontmatter**: YAML with title, created, updated, status, tags on every document
+- **Tables**: Always have a blank line above them
+- **Callouts**: `> [!CRITICAL]`, `> [!WARNING]`, `> [!TIP]`, `> [!NOTE]`, `> [!IMPORTANT]`
+- **Diagrams**: Mermaid for data flows, dependency graphs, timelines
+- **Cross-references**: `[[path/to/doc]]` wiki-links
+- **Issue IDs**: `CRIT-001`, `HIGH-001`, `MED-001`, `LOW-001`
+- **Code evidence**: Always include file path and line number
+
 ## Completion Criteria
 
 - [ ] All components have individual review documents with scores
@@ -293,14 +304,3 @@ Long-term structural changes:
 - [ ] Executive summary provides clear next steps for decision-makers
 - [ ] Every finding cites specific file:line evidence
 - [ ] No false positives — every issue is real and reproducible
-
----
-
-## Relationship to Audit
-
-| Codebase Audit ([[code-audit]]) | Code Review (This Document) |
-|----------------------------------|----------------------------|
-| Identifies patterns across codebases | Deep-dives into single codebase |
-| Focuses on architecture and consolidation | Focuses on code quality and security |
-| Produces framework/improvement proposals | Produces technical debt inventory |
-| Run first for multi-codebase projects | Run during/after for thorough analysis |
