@@ -1,6 +1,6 @@
-# Claude Setup
+# Claude Config
 
-Portable Claude Code configuration — rules, skills, and prompts. Clone onto any machine, symlink into `~/.claude/`, and everything works.
+Portable Claude Code configuration — rules, skills, and prompts.
 
 ## Structure
 
@@ -13,8 +13,9 @@ rules/                              # → ~/.claude/rules/
 └── test-driven-debugging.md
 
 skills/                             # → ~/.claude/skills/
+├── document-codebase/SKILL.md      # /document-codebase
 ├── review-codebase/SKILL.md        # /review-codebase
-└── document-codebase/SKILL.md      # /document-codebase
+└── update-plans/SKILL.md           # /update-plans
 
 prompts/
 ├── tasks/                          # Specific operation prompts
@@ -33,12 +34,13 @@ prompts/
 ## Installation
 
 ```bash
-git clone git@github.com:GTFerguson/claude-setup.git ~/.claude-setup
+git clone git@github.com:GTFerguson/claude-config.git ~/projects/claude-config
 
-# Symlink rules and skills into Claude Code
-ln -s ~/.claude-setup/rules/* ~/.claude/rules/
-ln -s ~/.claude-setup/skills/* ~/.claude/skills/
+# Deploy rules and skills into ~/.claude/
+./install.sh
 ```
+
+After editing rules or skills, commit, push, then re-run `./install.sh` to deploy.
 
 ## Rules
 
@@ -54,8 +56,9 @@ ln -s ~/.claude-setup/skills/* ~/.claude/skills/
 
 | Skill | Purpose |
 |-------|---------|
-| [/review-codebase](skills/review-codebase/SKILL.md) | Systematic code quality review — security, SOLID, performance, scoring, remediation roadmap |
 | [/document-codebase](skills/document-codebase/SKILL.md) | Generate architecture docs in standard `docs/` structure from codebase scan |
+| [/review-codebase](skills/review-codebase/SKILL.md) | Systematic code quality review — security, SOLID, performance, scoring, remediation roadmap |
+| [/update-plans](skills/update-plans/SKILL.md) | Audit plan docs — verify statuses, document completed work, delete finished plans |
 
 ## Task Prompts
 

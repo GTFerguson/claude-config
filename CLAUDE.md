@@ -1,8 +1,10 @@
-# Claude Setup
+# Claude Config
 
-Portable Claude Code configuration.
+Portable Claude Code configuration — rules, skills, and prompts.
 
-- `rules/` — Global coding standards (symlink to `~/.claude/rules/`)
-- `skills/` — Claude Code skills (`/review-codebase`, `/document-codebase`)
-- `prompts/tasks/` — Operation prompts (security fix, test gen, migration, extraction)
-- `prompts/orchestration/` — Multi-session scaffolding (quality gates, context management)
+- `rules/` — Global coding standards, deployed to `~/.claude/rules/`
+- `skills/` — Claude Code skills (`/review-codebase`, `/document-codebase`, `/update-plans`)
+- `prompts/` — Operation and orchestration prompts
+- `install.sh` — Deploy rules and skills into `~/.claude/`
+
+Edit files here, commit and push, then run `./install.sh` to deploy.

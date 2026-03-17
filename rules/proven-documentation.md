@@ -125,3 +125,13 @@ For frequently cited works, a full reference can go in a "References" section at
 - For how-to instructions (those go in `docs/guides/`)
 - For project plans (those go in `docs/plans/`)
 - For trivially verifiable facts that don't need citations
+
+## Directory Organisation
+
+Documentation directories should stay navigable as they grow. Structure should emerge from content, not be planned upfront.
+
+- **Cluster by topic** — when a directory reaches ~10 files, group related docs into subdirectories. Don't wait until it's unmanageable.
+- **Place new docs in existing subdirectories** — when adding a doc, find the most relevant subdirectory rather than dropping it in the parent.
+- **Create subdirectories when a cluster forms** — if 3+ docs share a topic and no subdirectory exists, create one and move them together.
+- **Maintain a `README.md` index** — when a directory has subdirectories, keep a root-level index with links to every doc organised by cluster. Update it when adding docs or subdirectories.
+- **Keep it organic** — subdirectory names should describe what's inside, not impose a taxonomy. Rename or restructure when the content outgrows the labels.
