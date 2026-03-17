@@ -224,5 +224,5 @@ Documentation directories should stay navigable as they grow. Structure should e
 - **Cluster by topic** — when a directory reaches ~10 files, group related docs into subdirectories. Don't wait until it's unmanageable.
 - **Place new docs in existing subdirectories** — when adding a doc, find the most relevant subdirectory rather than dropping it in the parent.
 - **Create subdirectories when a cluster forms** — if 3+ docs share a topic and no subdirectory exists, create one and move them together.
-- **Maintain a `README.md` index** — when a directory has subdirectories, keep a root-level index with links to every doc organised by cluster. Update it when adding docs or subdirectories.
+- **Every directory gets a `README.md` index** — every directory containing docs must have a README.md that links to all docs within it (and to subdirectory READMEs if they exist). This applies at every level: root, subdirectories, and sub-subdirectories. Update the README when adding, moving, or removing docs.
 - **Keep it organic** — subdirectory names should describe what's inside, not impose a taxonomy. Rename or restructure when the content outgrows the labels.
