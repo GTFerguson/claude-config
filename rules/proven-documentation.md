@@ -126,6 +126,25 @@ For frequently cited works, a full reference can go in a "References" section at
 - For project plans (those go in `docs/plans/`)
 - For trivially verifiable facts that don't need citations
 
+## When to Write an Architecture Doc
+
+Architecture docs explain **how a system works and why it was designed that way**. The same PROVEN quality principles apply — decisions need rationale, not just description.
+
+Plans come before implementation; architecture docs come after. A plan captures design intent, an architecture doc captures what was actually built and why. The lifecycle is: **plan → implement → commit → architecture doc → delete/archive plan**.
+
+- **When a feature or system ships** — once code is committed and stable, graduate the design knowledge from the plan into an architecture doc. Don't wait — the context is freshest right after shipping.
+- **When significantly changing an existing system** — update the architecture doc to reflect the new reality
+- **When design decisions aren't obvious from the code** — tradeoffs, rejected alternatives, and "why not the simpler approach" belong in architecture docs, not code comments
+- **When no plan existed** — if a system was built without a plan doc, it still needs an architecture doc once it ships
+
+### What an Architecture Doc Should Cover
+
+- **Purpose** — what problem the system solves and why it exists as a separate component
+- **How it works** — data flow, key algorithms, integration points with other systems
+- **Design decisions** — why this approach over alternatives, with rationale inline (not in a separate decisions directory)
+- **Configuration** — what's tuneable and where the knobs are
+- **Boundaries** — what's in scope and what's deliberately excluded
+
 ## Directory Organisation
 
 Documentation directories should stay navigable as they grow. Structure should emerge from content, not be planned upfront.
