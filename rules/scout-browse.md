@@ -24,10 +24,14 @@ scout-browse close                # close browser
 
 ## Flags
 
-- `--headless` — run headless (default is headed, which avoids Cloudflare)
+- `--headless` — run headless. **Default to this for localhost / dev servers / internal tools.** Faster, doesn't steal focus, and doesn't load the persistent profile's other tabs (which can pollute snapshots and mis-target clicks on tab-name collisions).
 - `--no-profile` — don't load Google profile
 - `--no-extensions` — don't load NopeCHA
 - `--profile <path>` — use custom profile directory
+
+**Headless vs headed — pick deliberately:**
+- **Default: headless** for localhost, Vite dev servers, internal dashboards, anything you control. `scout-browse --headless open <url>`. Avoids tab pollution from the persistent Google profile.
+- **Fall back to headed** (no `--headless`, the default) only when the site has anti-bot protection (Cloudflare, Google Scholar, some journals) or needs the persistent Google profile's auth cookies.
 
 ## Pattern
 
