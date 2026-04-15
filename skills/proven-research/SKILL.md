@@ -47,9 +47,8 @@ Use WebSearch for:
 
 ### 4. scout-browse (Tertiary — Sites That Block Bots)
 
-Use `scout-browse` via Bash for sites that block raw HTTP (Google Scholar, some journals):
+Use `scout-browse` via Bash for sites that block raw HTTP (Google Scholar, some journals). The CLI is symlinked at `/usr/local/bin/scout-browse` and runs without any venv activation:
 ```bash
-source ~/projects/scout-engine/.venv/bin/activate
 scout-browse open "https://scholar.google.com/scholar?q=your+query"
 cat .scout-browse/page-*.yml
 scout-browse close

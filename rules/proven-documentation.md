@@ -9,7 +9,7 @@ When conducting PROVEN research, use these sources in priority order:
 1. **alphaxiv** (MCP tools) — 2.5M+ academic papers. Search here FIRST for high-quality, recent research. Use `mcp__alphaxiv__embedding_similarity_search` for conceptual queries, `mcp__alphaxiv__full_text_papers_search` for keywords/authors, and `mcp__alphaxiv__get_paper_content` to read papers.
 2. **PubMed E-utilities** — biomedical, health science, exercise physiology, clinical research. Free API, no auth. Indexes journals not on arXiv (JSCR, Sports Medicine, MSSE, BJSM, etc.). Search: `WebFetch https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=QUERY&retmax=20&retmode=json`. Fetch abstracts: `WebFetch https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=PMID1,PMID2&retmode=text&rettype=abstract`.
 3. **WebSearch** — practitioner blogs, industry analysis, regulatory sources, exchange docs, sources not on arXiv or PubMed.
-4. **scout-browse** — sites that block raw HTTP (Google Scholar, some journals). Use via Bash with `source ~/projects/scout-engine/.venv/bin/activate && scout-browse open <url>`.
+4. **scout-browse** — sites that block raw HTTP (Google Scholar, some journals). Symlinked at `/usr/local/bin/scout-browse`, no venv activation needed — just `scout-browse open <url>`.
 
 Always search alphaxiv and PubMed first. They surface academic research that WebSearch often misses. Use the `/proven-research` skill for structured research sessions.
 
