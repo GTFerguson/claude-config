@@ -7,6 +7,8 @@ description: Assess and organise docs for a specific topic (e.g. "narrative ques
 
 Given a topic, scan the project's docs, assess what exists, tidy loose files into clusters, and present a clear picture of what's shipped, what's next, and the work breakdown. Ends with an overview the user can build on or discuss before coding starts.
 
+The clustering step is PROVEN adherence in action — docs kept properly organised and indexed means every future `/focus` run is fast and the context window stays tight. Drift accumulates silently; this skill catches it each time a topic comes into view.
+
 ## Step 1 — Discover project structure
 
 Read `CLAUDE.md` (or equivalent) and the doc index (`docs/README.md`, `docs/plans/README.md`, `docs/reference/README.md`) to understand:
