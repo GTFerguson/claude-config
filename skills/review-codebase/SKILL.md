@@ -9,6 +9,60 @@ You are performing a systematic code review, analysing each component for securi
 
 ---
 
+## Reviewer Discipline (read first)
+
+A code review is only useful if its findings are **real**. Five real findings beat twenty findings where five are wrong — false positives erode trust in the accurate findings and waste the team's time chasing ghosts.
+
+Apply these rules before logging any finding.
+
+### 1. Search for the fix before logging the gap
+
+The single biggest source of false positives is "X is missing" when X is actually present somewhere the reviewer didn't look. Before claiming an issue:
+
+- **"No auth on endpoint X"** → grep for `auth`, `token`, `session`, the framework's auth decorator/middleware, the user-resolution function in adjacent files.
+- **"No transaction wrapping"** → grep for `Transaction`, `BEGIN`, `commit`, `rollback`, `with db.begin()`.
+- **"No validation on input X"** → grep for the field name, the validator library, schema files.
+- **"Magic numbers in X"** → grep for the literal value in named constants and config files; the value may already be named.
+- **"Missing rate limiting"** → grep for `rate`, `bucket`, `throttle`, `limit`.
+- **"Returns `double` where `int` is needed"** → read the actual function signature, don't guess from the name.
+
+If the fix is already present, **don't log the finding**. The review's job is to find real problems, not list features the reviewer expected to be missing.
+
+### 2. Evidence is copy-pasted, never paraphrased
+
+Every code snippet in a finding must be the **actual current contents of the file**, captured via `Read` and quoted verbatim with real line numbers. Never:
+
+- Hand-write a snippet of "what the code probably looks like."
+- Reconstruct code from memory or from the file name.
+- Paraphrase a function signature, modify it "for clarity," or add ellipses that change its meaning.
+
+If you can't produce a verbatim snippet with a line number, you don't have evidence — drop the finding.
+
+### 3. Assume you're wrong on Critical and High findings
+
+Before logging a Critical or High severity issue, ask: **what evidence would prove this finding is wrong?** Then look for that evidence:
+
+- For "auth missing" — search for the auth gate in adjacent files and in middleware registration.
+- For "no transaction" — search the call stack of the function for an outer transaction.
+- For "silent failure" — trace the exception path to the consumer.
+
+A Critical finding that turns out to be a false positive is worse than no finding. The bar for Critical/High is high confidence + reproducible evidence.
+
+### 4. CVSS scoring is opt-in, not default
+
+Only assign a CVSS score when:
+- The vulnerability is exploitable as described.
+- You have traced the attack path end-to-end.
+- You're confident a security professional would agree with the score.
+
+A finding without CVSS is fine; a wrong CVSS is not. If unsure, write "Severity: High (no CVSS)" and explain.
+
+### 5. "No notable issues" is a valid component verdict
+
+Not every component must produce findings in every dimension. If a component's security review finds nothing, write "No notable security issues." Don't manufacture findings to fill the section.
+
+---
+
 ## Phase 1: Discovery
 
 Investigate the codebase to understand its shape before diving into reviews.
@@ -86,7 +140,7 @@ For every file in the component:
 - **CSRF/CORS** — Is cross-origin protection configured correctly?
 - **Fail Mode** — Does code fail open (dangerous) or fail closed (safe)?
 
-For each security finding, estimate a CVSS score.
+For each security finding, optionally assign a CVSS score per Reviewer Discipline §4 (only when the vulnerability is exploitable and the attack path traced end-to-end).
 
 #### 2. SOLID Principles
 
@@ -186,6 +240,9 @@ Weighted breakdown:
 | Performance | 20% |
 | Error Handling | 20% |
 
+> [!IMPORTANT]
+> Score each dimension based on what you **actually found**, not on a target distribution. A component with no security issues scores 9-10 on Security — it does not score 6 because "every component must have something." Per Reviewer Discipline §5, "no notable issues" is a valid finding for any dimension. Do not invent issues to justify a lower score.
+
 ### Component Review Document
 
 Each review produces `components/NN-component-name.md` containing:
@@ -193,7 +250,7 @@ Each review produces `components/NN-component-name.md` containing:
 - Score with visual bar and weighted breakdown
 - File inventory with line counts
 - Architecture diagram (Mermaid)
-- Security findings with evidence, impact, CVSS, and remediation code
+- Security findings with evidence, impact, optional CVSS, and remediation code
 - SOLID analysis with status and evidence per principle
 - Code smells table (smell, location, description, suggested fix)
 - DRY violations table (pattern, occurrences, suggested refactoring)
@@ -213,12 +270,49 @@ Log every issue to `issues/{severity}.md` as you review. Use global sequential I
 
 Each issue entry must include:
 
-- **Component link**, **file:line**, **severity**, **CVSS** (for security)
+- **Component link**, **file:line**, **severity**
+- **CVSS** — only when the criteria in Reviewer Discipline §4 are met; otherwise omit
 - **Description** — What and why it matters
-- **Evidence** — The actual problematic code with path and line numbers
+- **Evidence** — Verbatim code from the file at the cited line numbers, captured via `Read`. No paraphrasing, no reconstructed snippets. (Reviewer Discipline §2)
 - **Impact** — Specific consequences
 - **Remediation** — Concrete working code, not vague advice
-- **Testability** (for HIGH+ structural issues) — Safe to refactor / Needs characterization tests / Untestable. This determines whether remediation effort includes test-writing as a prerequisite.
+- **Testability** (for HIGH+ structural issues) — Safe to refactor / Needs characterization tests / Untestable
+- **Counter-evidence searched** (for CRIT and HIGH) — One line stating what you grepped/read to confirm the issue is real and the fix is not already in place. (Reviewer Discipline §1, §3)
+
+Before logging, apply Reviewer Discipline §1 (search for the fix) and §3 (assume you're wrong on Critical/High). If the search turns up the fix, drop the finding instead of logging it.
+
+---
+
+## Phase 3.5: Verification Pass
+
+After all component reviews are complete and before Phase 4, do one verification pass over every issue logged so far. This is the gate that catches false positives before they reach the executive summary.
+
+### Re-read every Critical and High finding
+
+For each `CRIT-*` and `HIGH-*` issue:
+
+1. Re-read the cited file(s) at the cited line(s) using `Read`.
+2. Confirm the verbatim snippet in the issue matches the file's current contents exactly. If it doesn't (the file has changed, or the snippet was paraphrased), either correct it or drop the finding.
+3. Confirm the claimed problem is still present. If the recommended fix is already in the code, drop the finding.
+4. Re-run the §1 grep — search the wider codebase for the fix you claimed was missing. If you find it, drop the finding.
+
+A dropped finding is a win, not a loss. It means the review is more accurate.
+
+### Consolidate duplicates
+
+Walk all four `issues/*.md` files and look for the same finding logged at multiple severities (e.g., the same pricing bug appearing as both HIGH-003 and MED-009, or the same JSON schema gap as both HIGH-005 and MED-002).
+
+For each duplicate pair: keep the higher-severity entry, replace the lower-severity entry with a one-line `**Duplicate of HIGH-NNN.** See above.` pointer. Do not delete the lower entry — preserving the ID keeps cross-references stable.
+
+### Sanity check the headline numbers
+
+Before writing the executive summary:
+
+- Total findings count — is it inflated by duplicates or speculative items?
+- Critical/High count — would you stake your reputation on each one being real and exploitable?
+- Component scores — do any feel forced (a low score driven by manufactured findings)? Adjust upward if so.
+
+If the verification pass cuts the finding count substantially, that's expected and good. The original count was a draft, not a target.
 
 ---
 
@@ -318,9 +412,12 @@ Long-term structural changes:
 
 - [ ] All components have individual review documents with scores
 - [ ] All issues categorised by severity with evidence and remediation code
+- [ ] Phase 3.5 verification pass run; every Critical and High finding re-read against the live file
+- [ ] Duplicates consolidated; no two issue IDs cover the same finding
+- [ ] Every CRIT/HIGH finding has a "Counter-evidence searched" line proving the fix isn't already in place
+- [ ] Every code snippet in every finding is verbatim from the file (no paraphrasing or fabrication)
+- [ ] CVSS scores assigned only where the §4 criteria are met
 - [ ] Integration analysis covers data flows between all major components
 - [ ] Quick wins are identified and actionable with code
 - [ ] Refactoring plan has sprint-level detail
 - [ ] Executive summary provides clear next steps for decision-makers
-- [ ] Every finding cites specific file:line evidence
-- [ ] No false positives — every issue is real and reproducible
