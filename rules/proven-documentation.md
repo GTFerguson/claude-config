@@ -152,9 +152,19 @@ For frequently cited works, a full reference can go in a "References" section at
 Architecture docs explain **how a system works and why it was designed that way**. Decisions need rationale, not just description.
 
 - **When a feature or system ships** — graduate design knowledge from the plan (see Plan Docs lifecycle below). Don't wait — context is freshest right after shipping.
+- **When a substrate-level change lands, even mid-plan** — new public types, new code paths, new invariants, new public APIs are *shipped system changes* the moment they merge, regardless of whether the parent feature is complete. If an agent reading the codebase next week needs to understand it from the code, it needs an architecture doc now. Don't wait for the feature to finish.
 - **When significantly changing an existing system** — update the architecture doc to reflect the new reality
 - **When design decisions aren't obvious from the code** — tradeoffs, rejected alternatives, and "why not the simpler approach" belong in architecture docs, not code comments
 - **When no plan existed** — if a system was built without a plan doc, it still needs an architecture doc once it ships
+
+### Substrate vs feature
+
+A "feature" is what users (or callers) get; "substrate" is the machinery underneath. They graduate on different cadences:
+
+- **Substrate changes graduate immediately.** A new `Location` variant, a new occupancy index, a new public API method — these are permanent, code-visible system changes the moment they land, even when the parent feature is still mid-flight. Write or update the architecture doc with the substrate-level rationale now; future increments add to it.
+- **Feature-level deliverables graduate when the feature ships.** The user-visible capability ("local maps support combat") graduates when it actually works end-to-end. At that point, the architecture doc gets the feature-level integration story layered on top of the substrate sections that landed earlier.
+
+A multi-step plan with shipped sub-steps should already have an architecture doc growing alongside it — not a deferred lump that lands when the last sub-step merges. The plan doc shrinks as substrate graduates; the architecture doc grows. The plan deletes when both the feature *and* its design knowledge have fully moved out.
 
 ### What an Architecture Doc Should Cover
 
@@ -194,14 +204,19 @@ Plans are vision-level by default. Implementation detail (data models, API contr
 ### Lifecycle
 
 ```
-Plan created → work begins → features ship → graduate → plan deleted
+Plan created → work begins
+  → substrate sub-step ships → graduate substrate to arch doc → plan sub-step stubbed
+  → next substrate sub-step ships → arch doc grows → plan shrinks
+  → final sub-step ships → feature-level integration story added → plan deleted
 ```
 
 **Graduation** means extracting the durable knowledge into the right permanent home:
 
 - Design decisions, data flow, algorithms → architecture doc
 - Research findings gathered during planning → reference doc (if not already there)
-- The plan itself → `rm`
+- The plan itself → `rm` (only once the *whole* plan's design knowledge has moved out)
+
+Graduation is **incremental**, not deferred to a single end-of-plan event. Each sub-step that ships a substrate-level change graduates its design rationale to the architecture doc *now*; the plan sub-step shrinks to a stub with the commit hash and a link to the arch section. The plan only deletes when the last sub-step has shipped and its knowledge has also moved out.
 
 Don't keep "completed" plans around as historical records — that's what architecture docs and git history are for.
 
