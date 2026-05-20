@@ -1,15 +1,54 @@
 ---
 name: proven-research
-description: Conduct PROVEN-quality research on a topic. Searches alphaxiv for academic papers, WebSearch for practitioner sources, and writes a reference doc with full citations and evidence tiers. Use when the user asks to research a topic, find evidence for a claim, or write a reference doc.
+description: Conduct PROVEN-quality research on a topic. Searches alphaxiv for academic papers, PubMed for biomedical research, and WebSearch for practitioner sources, then writes reference docs with full citations and evidence tiers. Supports an optional two-layer pipeline (foundational research in /home/gary/projects/common-knowledge/, then project-specific research in the current project's docs/reference/) for topics with cross-domain foundations. Use when the user asks to research a topic, find evidence for a claim, or write a reference doc.
 ---
 
 # PROVEN Research
 
-You are conducting evidence-based research following the PROVEN principles. Your goal is to produce a reference document with full citations, evidence tiers, and verifiable claims.
+You are conducting evidence-based research following the PROVEN principles. Your goal is to produce reference documents with full citations, evidence tiers, and verifiable claims.
 
-## Research Sources (use ALL of these)
+## Step 1 — Decide the scope: one layer or two?
 
-### 1. alphaxiv (Primary — Academic Papers)
+Before searching, decide where the findings belong. Two layers exist:
+
+```
+Layer 1 — common-knowledge/          (foundational, cross-domain)
+  /home/gary/projects/common-knowledge/
+  Findings that would be equally useful in a completely different project.
+
+Layer 2 — <project>/docs/reference/   (project-specific)
+  Findings scoped to the current product, audience, or codebase.
+  Wiki-links back to Layer 1 instead of duplicating it.
+```
+
+Use the table to classify each finding:
+
+| Goes in common-knowledge (Layer 1) | Goes in project reference (Layer 2) |
+|------------------------------------|--------------------------------------|
+| How Google's ranking systems work | Target keywords for this product's niche |
+| Evidence on Core Web Vitals as a ranking factor | Competitor SERP analysis for this product |
+| Search intent classification theory | Content gap analysis for this audience |
+| Structured data schema standards | Specific pages to build for this product |
+| E-E-A-T signal evidence | This product's programmatic SEO plan |
+| Programmatic SEO as a pattern | Borough/neighbourhood keyword data (goodlet) |
+
+**Heuristic:** if a finding would be equally useful in a completely different project, it belongs in common-knowledge.
+
+If the topic is purely project-specific, skip the Layer 1 work and go straight to Layer 2 (steps 2–5 still apply, just to one directory).
+
+If the topic has both, **build Layer 1 first**, then Layer 2 builds on it via wiki-links.
+
+## Step 2 — Audit what already exists
+
+```bash
+nkrdn search "<topic>" --source docs
+```
+
+Check both common-knowledge and the current project's reference for existing coverage before researching. Update existing docs rather than creating overlapping ones (PROVEN's N principle).
+
+## Step 3 — Search the sources
+
+### 3a. alphaxiv (Primary — Academic Papers)
 
 Use the alphaxiv MCP tools to find high-quality, recent academic research:
 
@@ -20,7 +59,7 @@ Use the alphaxiv MCP tools to find high-quality, recent academic research:
 
 **Always search alphaxiv first.** It has 2.5M+ papers and surfaces the latest research that WebSearch may miss.
 
-### 2. PubMed E-utilities (Primary — Biomedical/Health Science)
+### 3b. PubMed E-utilities (Primary — Biomedical/Health Science)
 
 Use PubMed's free API for biomedical, health science, exercise physiology, and clinical research not covered by arXiv. No auth required.
 
@@ -36,7 +75,7 @@ WebFetch URL: https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubme
 
 Use PubMed when the topic falls within health/exercise/nutrition/clinical domains — it indexes journals that arXiv does not (JSCR, Sports Medicine, MSSE, BJSM, etc.). Combine with alphaxiv for full coverage.
 
-### 3. WebSearch (Secondary — Practitioner Sources)
+### 3c. WebSearch (Secondary — Practitioner Sources)
 
 Use WebSearch for:
 - Practitioner blogs and industry analysis
@@ -45,7 +84,7 @@ Use WebSearch for:
 - News and current events
 - Sources not on arXiv or PubMed (finance journals, books)
 
-### 4. scout-browse (Tertiary — Sites That Block Bots)
+### 3d. scout-browse (Tertiary — Sites That Block Bots)
 
 Use `scout-browse` via Bash for sites that block raw HTTP (Google Scholar, some journals). The CLI is symlinked at `/usr/local/bin/scout-browse` and runs without any venv activation:
 ```bash
@@ -54,18 +93,22 @@ cat .scout-browse/page-*.yml
 scout-browse close
 ```
 
-## Research Process
+## Step 4 — Write the reference doc(s)
 
-1. **Search alphaxiv** with 2-3 varied queries covering different angles of the topic
-2. **Search PubMed** when the topic touches health, exercise science, nutrition, or clinical domains — these journals are not on arXiv
-3. **Read key papers** using `get_paper_content` (alphaxiv) or `efetch` abstracts (PubMed) for the most relevant results
-4. **Search WebSearch** for practitioner perspectives and non-academic sources
-5. **Cross-reference** — do academic findings align with practitioner experience?
-6. **Write the reference doc** following PROVEN format
+### Layer 1 — common-knowledge (only if topic warrants it)
 
-## Output Format
+Write foundational docs to `/home/gary/projects/common-knowledge/<cluster>/<topic>.md`. Update `/home/gary/projects/common-knowledge/<cluster>/README.md` and the root `/home/gary/projects/common-knowledge/README.md` with pointers.
 
-Write a reference doc at `docs/reference/<topic-name>.md` with:
+### Layer 2 — project reference
+
+Write project-specific docs to `<project>/docs/reference/<topic-name>.md`. When building on Layer 1, wiki-link rather than duplicate:
+
+```markdown
+The ranking factor evidence base is at [[ranking-factors]].
+Applying that to goodlet's target queries: ...
+```
+
+### Frontmatter and structure (both layers)
 
 ```markdown
 ---
@@ -91,6 +134,24 @@ tags: [relevant, tags]
 - Full reference list at the end
 ```
 
+## Step 5 — Index, commit, and reindex
+
+1. Update the relevant README(s) with the new entry/entries.
+2. Cross-reference from existing docs where relevant.
+3. If the research was prompted by an experiment, link back to the experiment log.
+4. **If you wrote to common-knowledge**, commit it as its own clean change:
+   ```bash
+   cd /home/gary/projects/common-knowledge
+   git add -A
+   git commit -m "<topic cluster>: <one-line summary>"
+   ```
+   One commit per research session or topic cluster. Do not batch unrelated topics.
+5. **Rebuild nkrdn** so the workspace graph reflects the new docs:
+   ```bash
+   nkrdn workspace rebuild common-knowledge   # if Layer 1 was touched
+   nkrdn workspace rebuild <current-project>  # if Layer 2 was touched
+   ```
+
 ## PROVEN Principles (Mandatory)
 
 ### P — Provenance
@@ -109,7 +170,7 @@ Include sample size, population, effect size, journal name.
 Label every source:
 
 | Tier | Source Type |
-|------|-----------|
+|------|-------------|
 | 1 | Systematic review / meta-analysis |
 | 2 | RCT / peer-reviewed empirical study |
 | 3 | Observational / cohort study |
@@ -117,10 +178,4 @@ Label every source:
 | 5 | Practitioner opinion / textbook |
 
 ### N — Not Duplicated
-Check existing docs before creating new ones. Update rather than duplicate.
-
-## After Writing
-
-1. Update `docs/reference/README.md` with the new entry
-2. Cross-reference from existing docs where relevant
-3. If the research was prompted by an experiment, link back to the experiment log
+Check existing docs before creating new ones. Update rather than duplicate. The two-layer model exists to prevent duplication across projects — promote shared foundations to common-knowledge instead of re-researching them per project.
