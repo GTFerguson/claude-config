@@ -29,6 +29,9 @@ prompts/
     ├── context-restore.md
     ├── master-orchestrator-init.md
     └── phase-orchestrator-init.md
+
+shell/                              # sourced from ~/.bashrc (repo is in-place at ~/.claude)
+└── claude-resume.sh                # auto-resume claude from latest /handoff brief
 ```
 
 ## Installation
@@ -80,3 +83,22 @@ For working through large codebases systematically across multiple sessions.
 | [context-restore](prompts/orchestration/context-restore.md) | Restore context after a session break |
 | [master-orchestrator-init](prompts/orchestration/master-orchestrator-init.md) | Initialize a multi-phase program |
 | [phase-orchestrator-init](prompts/orchestration/phase-orchestrator-init.md) | Initialize a phase within a program |
+
+## Shell Integration
+
+`shell/claude-resume.sh` wraps the `claude` command so that when an interactive
+session exits and the project has a fresh `docs/plans/handoff/<slug>.md` brief
+(from the `/handoff` skill), it relaunches in the same terminal seeded with
+`claude "Read <brief> and resume…"`. The brief path is submitted as the first
+turn, so the resumed session starts working with no copy-paste or `/clear`.
+
+This repo is cloned in-place at `~/.claude`, so the script is sourced directly:
+
+```bash
+[ -f ~/.claude/shell/claude-resume.sh ] && . ~/.claude/shell/claude-resume.sh
+```
+
+Guards: resumes once per `/handoff` (a marker in `~/.cache/cade-resume/`), only
+for briefs newer than `CADE_RESUME_WINDOW` seconds (default 1800), and never for
+`claude -p`/non-interactive use. `resume` is a manual command to jump back into
+the latest brief on demand.

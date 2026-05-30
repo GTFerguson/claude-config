@@ -9,5 +9,7 @@
 !skills/**
 !prompts/
 !prompts/**
+!shell/
+!shell/**
 !README.md
 !CLAUDE.md
