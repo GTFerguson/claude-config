@@ -61,6 +61,18 @@ A finding without CVSS is fine; a wrong CVSS is not. If unsure, write "Severity:
 
 Not every component must produce findings in every dimension. If a component's security review finds nothing, write "No notable security issues." Don't manufacture findings to fill the section.
 
+### 6. Positive safety claims need the same proof as findings
+
+A review's prose makes affirmative claims too — "auth is correct," "loop-thread discipline is consistent," "no SQL injection anywhere," "transactions are used uniformly." These are exactly as falsifiable as a finding, and a wrong reassurance is worse than a wrong finding: it tells the team a whole class of risk is handled when it isn't, so no one looks again.
+
+Before writing any blanket positive claim, apply Rule 1 inverted: search for the **counter-example** across *every* relevant site, not just the one or two you happened to read.
+
+- "Loop-thread discipline is consistent" → grep every socket-send / state-mutation site, not a sample. A single direct `ws->send()` on the wrong thread falsifies it.
+- "All inputs are validated" → enumerate the entry points and check each.
+- "Auth is enforced on every route" → list the routes and verify each gate.
+
+If you have not checked exhaustively, **scope the claim** to what you actually verified ("loop-thread discipline is consistent *within this layer*") or drop it. An unscoped "this is safe" carries the reviewer's authority — earn it or qualify it.
+
 ---
 
 ## Phase 1: Discovery

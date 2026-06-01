@@ -108,6 +108,30 @@ def get_name(self):
 if len(items) == 0:
 ```
 
+## Don't State Facts the Code Can Drift Away From
+
+A comment that asserts a concrete dimension, threshold, behavior, or guarantee is untested prose. The moment the code changes, the comment silently becomes a lie, and the next reader trusts it. Comments like `// 48x48 grid (<= 2304 nodes)`, `// all failure modes log a warning`, `// cost is paid in essentia`, or `// callers always pass a valid id` are landmines: each describes something nothing enforces.
+
+If a value or guarantee matters enough to write down, pin it where it cannot drift:
+
+- **A concrete value** → a named constant; reference the constant in prose, not the literal.
+- **An invariant or guarantee** → an assertion, a type, or a test that fails when it is violated.
+- **A behavior** ("logs on failure", "clamps out-of-range") → let the code show it, or write a test that asserts it.
+
+Reserve prose for the WHY the code genuinely can't express. State a number or a promise in a comment only when something else actually enforces it.
+
+**Bad - prose asserting behavior nothing keeps honest:**
+```cpp
+// Dijkstra on a 48x48 grid (<= 2304 nodes)   // default later became 100 — comment now lies
+// All failure modes log a warning            // the function logs nothing
+```
+
+**Good - the code or a constant carries the fact:**
+```cpp
+// Output grid is local_size x local_size.
+static constexpr unsigned kDefaultLocalSize = 100;
+```
+
 ## Summary
 
 | Do | Don't |
@@ -117,3 +141,4 @@ if len(items) == 0:
 | Use @todo for genuine future work | Use @todo as a tracking system |
 | Comment non-obvious decisions | Comment obvious code |
 | Make comments self-contained | Assume reader has project context |
+| Pin values & guarantees in constants/tests | State a dimension or promise only a comment enforces |
