@@ -52,10 +52,9 @@ Check both common-knowledge and the current project's reference for existing cov
 
 Use the alphaxiv MCP tools to find high-quality, recent academic research:
 
-- `mcp__alphaxiv__embedding_similarity_search` — semantic search for concepts and methods. Write detailed 2-3 sentence queries covering the topic from multiple angles.
-- `mcp__alphaxiv__full_text_papers_search` — keyword search for specific methods, author names, or paper titles.
+- `mcp__alphaxiv__discover_papers` — semantic + keyword discovery and ranking of candidate papers. Pass `keywords` (3-4 terms), a detailed `question` (2-3 sentences covering the topic from multiple angles), and a `difficulty` (1-10, higher = more retrieval rounds).
 - `mcp__alphaxiv__get_paper_content` — retrieve full paper content and structured overviews.
-- `mcp__alphaxiv__answer_pdf_queries` — extract specific findings from papers.
+- `mcp__alphaxiv__answer_pdf_queries` — extract specific findings from one paper. Batch *every* question for that paper into a single call (multiple queries on the same paper are nearly free); issue calls in parallel across papers.
 
 **Always search alphaxiv first.** It has 2.5M+ papers and surfaces the latest research that WebSearch may miss.
 
@@ -134,7 +133,7 @@ tags: [relevant, tags]
 - Full reference list at the end
 ```
 
-## Step 5 — Index, commit, and reindex
+## Step 5 — Index and commit
 
 1. Update the relevant README(s) with the new entry/entries.
 2. Cross-reference from existing docs where relevant.
@@ -146,11 +145,10 @@ tags: [relevant, tags]
    git commit -m "<topic cluster>: <one-line summary>"
    ```
    One commit per research session or topic cluster. Do not batch unrelated topics.
-5. **Rebuild nkrdn** so the workspace graph reflects the new docs:
-   ```bash
-   nkrdn workspace rebuild common-knowledge   # if Layer 1 was touched
-   nkrdn workspace rebuild <current-project>  # if Layer 2 was touched
-   ```
+5. **Indexing is automatic — do not rebuild nkrdn yourself.** The Stop hook
+   reindexes the current repo and common-knowledge into the workspace graph when
+   the session ends. `nkrdn workspace rebuild` is deny-ruled by design; running it
+   only triggers a denied prompt.
 
 ## PROVEN Principles (Mandatory)
 
@@ -176,6 +174,25 @@ Label every source:
 | 3 | Observational / cohort study |
 | 4 | Narrative review |
 | 5 | Practitioner opinion / textbook |
+
+**Mapping CS/ML, simulation, and engineering evidence.** This scale is biomedical
+in origin; most CS/ML work is not an RCT, so map by *evidential strength*, not by
+"it's a published paper." A preprint is **not** automatically Tier 2 — lack of
+peer review and small or simulation-only evaluation pull it down.
+
+| CS/ML evidence type | Tier |
+|---|---|
+| Meta-analysis / broad systematic survey of many studies | 1 |
+| Large peer-reviewed system/benchmark with strong evaluation; formal proof | 2 |
+| Single-system empirical paper with real-data evaluation, or a replicated result | 3 |
+| Architecture/method paper, small or simulation-only eval, LLM-as-agent simulation, narrative survey | 4 |
+| Preprint position paper, single-run demo, blog, practitioner opinion | 5 |
+
+Worked example: an LLM social-simulation study (e.g. 3 runs × 2 models) is
+**Tier 4**, not Tier 2 — it observes model behaviour in a sandbox, it does not
+establish a real-world result. When one citation backs a claim alongside a
+stronger source, tier each separately rather than lending the weak one the
+strong one's label.
 
 ### N — Not Duplicated
 Check existing docs before creating new ones. Update rather than duplicate. The two-layer model exists to prevent duplication across projects — promote shared foundations to common-knowledge instead of re-researching them per project.
