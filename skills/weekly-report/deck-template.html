@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Engineering Update — Week ending 19 June 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800;900&family=Sora:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+/* ===========================================================
+   THEME — Dense Dark (read / leave-behind, info-rich)
+   =========================================================== */
+:root{
+  --bg:#0b0d11; --panel:#13161c; --panel2:#171b22; --line:rgba(255,255,255,.09);
+  --ink:#eef1f4; --soft:#cfd4da; --mut:#9aa2ad; --dim:#6b7280;
+  --accent:#c6ff3a; --good:#54d68a; --warn:#ff6a4d; --cool:#5aa9e6;
+  --mono:'JetBrains Mono',monospace; --disp:'Archivo',sans-serif; --body:'Sora',sans-serif;
+  --t-title: clamp(2.2rem,4.8vw,4rem);
+  --t-h1:    clamp(1.55rem,3.4vw,2.7rem);
+  --t-h3:    clamp(1.1rem,1.9vw,1.5rem);
+  --t-body:  clamp(.95rem,1.4vw,1.18rem);   /* readable body — was too small */
+  --t-small: clamp(.8rem,1.05vw,.95rem);    /* labels/captions legible — was tiny */
+  --t-metric:clamp(1.8rem,3.8vw,3.1rem);
+  --pad: clamp(1rem,2.8vw,2.4rem);
+  --gap: clamp(.7rem,1.6vh,1.15rem);
+  --ease: cubic-bezier(0.16,1,0.3,1);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%;overflow-x:hidden}
+html{scroll-snap-type:y mandatory;scroll-behavior:smooth}
+.slide{width:100vw;height:100vh;height:100dvh;overflow:hidden;scroll-snap-align:start;
+  position:relative;display:flex;flex-direction:column;padding:var(--pad);
+  background:var(--bg);color:var(--ink);font-family:var(--body)}
+img{max-width:100%;object-fit:cover}
+@media (max-height:760px){:root{--pad:clamp(.8rem,2.2vw,1.6rem);--gap:clamp(.45rem,1.1vh,.8rem);
+  --t-title:clamp(1.6rem,4vw,2.8rem);--t-h1:clamp(1.2rem,3vw,2rem);--t-metric:clamp(1.4rem,3.2vw,2.3rem)}}
+@media (max-height:620px){:root{--t-body:clamp(.7rem,1.1vw,.88rem);--t-small:.6rem}.nav-dots,.hint{display:none}}
+@media (max-width:760px){.main,.two,.stats,.ruled,.next,.ws-grid{grid-template-columns:1fr !important}.fig{min-height:34vh}}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms !important;transition-duration:.2s !important}html{scroll-behavior:auto}}
+
+.slide::before{content:"";position:absolute;inset:0;pointer-events:none;opacity:.5;
+  background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);
+  background-size:64px 64px;-webkit-mask-image:radial-gradient(ellipse at 82% 0%,#000,transparent 72%);mask-image:radial-gradient(ellipse at 82% 0%,#000,transparent 72%)}
+
+.meta{display:flex;justify-content:space-between;align-items:center;font-family:var(--mono);
+  font-size:var(--t-small);letter-spacing:.16em;text-transform:uppercase;color:var(--mut);
+  padding-bottom:clamp(.55rem,1.4vh,1rem);border-bottom:1px solid var(--line);z-index:2;flex-shrink:0}
+.meta .l{color:var(--accent)} .meta b{color:var(--ink)} .meta .idx b{color:var(--accent)}
+
+.head{padding:clamp(.8rem,2vh,1.35rem) 0 clamp(.55rem,1.4vh,.95rem);z-index:2;flex-shrink:0}
+.kick{font-family:var(--mono);font-size:var(--t-small);letter-spacing:.2em;text-transform:uppercase;color:var(--accent);margin-bottom:.5em}
+.kick.cool{color:var(--cool)}
+h1{font-family:var(--disp);font-weight:800;font-size:var(--t-h1);line-height:1.04;letter-spacing:-.02em}
+h1 .w{color:var(--warn)} h1 .a{color:var(--accent)} h1 .c{color:var(--cool)}
+
+.reveal{opacity:0;transform:translateY(18px);transition:opacity .5s var(--ease),transform .5s var(--ease)}
+.slide.visible .reveal{opacity:1;transform:translateY(0)}
+.slide.visible .reveal:nth-child(1){transition-delay:.04s}
+.slide.visible .reveal:nth-child(2){transition-delay:.1s}
+.slide.visible .reveal:nth-child(3){transition-delay:.16s}
+.slide.visible .reveal:nth-child(4){transition-delay:.22s}
+.slide.visible .reveal:nth-child(5){transition-delay:.28s}
+
+.panel{background:var(--panel);border:1px solid var(--line);padding:clamp(.7rem,1.7vw,1.15rem);min-height:0}
+.panel.l{border-left:3px solid var(--line)}
+.panel.l-accent{border-left:3px solid var(--accent)}
+.panel.l-warn{border-left:3px solid var(--warn)}
+.panel.l-cool{border-left:3px solid var(--cool)}
+.panel h3{font-family:var(--mono);font-size:var(--t-small);letter-spacing:.1em;text-transform:uppercase;color:var(--mut);margin-bottom:.5em}
+.panel p{font-size:var(--t-body);line-height:1.5;color:var(--soft)}
+.panel p b{color:var(--ink)} .panel p em{font-style:normal;color:var(--accent);font-weight:600} .panel p .cm{color:var(--cool);font-weight:600}
+
+/* Boxes hug their content; the whole block centers so any slack is a small even
+   margin, never empty space INSIDE a panel. */
+.body-area{flex:1;min-height:0;display:flex;flex-direction:column;justify-content:center;gap:var(--gap);z-index:2}
+.col{justify-content:center}                 /* centre the panel stack within its column */
+.grid{display:grid;gap:var(--gap);min-height:0}
+.main{grid-template-columns:1.15fr .85fr}
+.two{grid-template-columns:1fr 1fr}
+.col{display:flex;flex-direction:column;gap:var(--gap);min-height:0}
+
+.title-slide{justify-content:space-between}
+.title-top{display:flex;justify-content:space-between;font-family:var(--mono);font-size:var(--t-small);
+  letter-spacing:.16em;text-transform:uppercase;color:var(--mut);border-bottom:1px solid var(--line);padding-bottom:1rem}
+.title-top .l{color:var(--accent)}
+.title-mid{flex:1;display:flex;flex-direction:column;justify-content:center;z-index:2}
+.title-rule{width:clamp(3rem,7vw,6rem);height:5px;background:var(--accent);margin-bottom:1.3em}
+.title-slide h1{font-family:var(--disp);font-weight:900;font-size:var(--t-title);max-width:20ch}
+.title-syn{font-size:var(--t-body);color:var(--mut);max-width:64ch;margin-top:1.1em;line-height:1.55}
+.title-syn b{color:var(--soft)}
+.title-foot{display:flex;gap:clamp(1rem,3vw,2.4rem);flex-wrap:wrap;font-family:var(--mono);
+  font-size:var(--t-small);letter-spacing:.08em;text-transform:uppercase;color:var(--mut);border-top:1px solid var(--line);padding-top:1rem}
+.title-foot b{color:var(--accent)}
+
+.stats{grid-template-columns:repeat(3,1fr)}
+.stat{background:var(--panel);border:1px solid var(--line);border-top:3px solid var(--accent);padding:clamp(.65rem,1.6vw,1.05rem)}
+.stat.s2{border-top-color:var(--ink)} .stat.s3{border-top-color:var(--cool)}
+.stat .v{font-family:var(--disp);font-weight:900;font-size:var(--t-metric);line-height:.85;letter-spacing:-.03em;color:var(--accent)}
+.stat.s2 .v{color:var(--ink)} .stat.s3 .v{color:var(--cool)}
+.stat .l{font-family:var(--mono);font-size:var(--t-small);color:var(--mut);margin-top:.55em;line-height:1.4}
+.stat .l b{color:var(--ink)}
+
+.fig{background:var(--panel2);border:1px solid var(--line);display:flex;flex-direction:column;overflow:hidden;min-height:0}
+.fig img{width:100%;height:min(46vh,360px);object-fit:cover;object-position:50% 42%}
+.fig .cap{padding:clamp(.5rem,1.2vw,.8rem) clamp(.55rem,1.3vw,.9rem);border-top:1px solid var(--line);
+  font-family:var(--mono);font-size:var(--t-small);color:var(--mut);line-height:1.5}
+.legend{display:flex;flex-wrap:wrap;gap:.4em .85em;padding:0 clamp(.55rem,1.3vw,.9rem) clamp(.5rem,1.2vw,.8rem)}
+.legend span{font-family:var(--mono);font-size:var(--t-small);color:var(--mut);display:flex;align-items:center;gap:.4em}
+.dot{width:.6em;height:.6em;border-radius:50%;display:inline-block}
+
+.ws-grid{grid-template-columns:1fr 1fr}
+.ws{background:var(--panel);border:1px solid var(--line);border-top:3px solid var(--accent);padding:clamp(.8rem,2vw,1.3rem);display:flex;flex-direction:column;gap:.5em}
+.ws.cool{border-top-color:var(--cool)}
+.ws .tag{font-family:var(--mono);font-size:var(--t-small);letter-spacing:.1em;text-transform:uppercase;color:var(--mut)}
+.ws h3{font-family:var(--disp);font-weight:800;font-size:var(--t-h3)}
+.ws p{font-size:var(--t-body);color:var(--soft);line-height:1.45}
+.ws .status{font-family:var(--mono);font-size:var(--t-small);color:var(--good);margin-top:auto;padding-top:.5em}
+.ws.cool .status{color:var(--cool)}
+.through{border-left:3px solid var(--accent);background:rgba(198,255,58,.05);padding:clamp(.65rem,1.6vw,1.1rem);font-size:var(--t-body);line-height:1.5;color:var(--soft)}
+.through b{color:var(--accent)}
+
+table{width:100%;border-collapse:collapse;font-size:var(--t-body)}
+th,td{text-align:left;padding:clamp(.4rem,1vh,.7rem) clamp(.45rem,1.1vw,.85rem);border-bottom:1px solid var(--line)}
+th{font-family:var(--mono);font-size:var(--t-small);text-transform:uppercase;letter-spacing:.06em;color:var(--mut);font-weight:500}
+td.r{font-family:var(--mono)}
+tr.ship td{background:rgba(198,255,58,.07)} tr.ship td:first-child{box-shadow:inset 3px 0 0 var(--accent);font-weight:600;color:var(--ink)}
+tr.drop td{color:var(--mut)}
+.rc{color:var(--good);font-weight:700}
+.pill{font-family:var(--mono);font-size:.82em;padding:.12em .55em;border-radius:2px}
+.pill.ok{background:rgba(84,214,138,.15);color:var(--good)} .pill.no{background:rgba(255,106,77,.14);color:var(--warn)}
+
+.ruled{grid-template-columns:repeat(3,1fr)}
+.rcard{background:var(--panel);border:1px solid var(--line);border-top:3px solid var(--warn);padding:clamp(.7rem,1.7vw,1.1rem);display:flex;flex-direction:column;gap:.45em}
+.rcard .h{font-family:var(--disp);font-weight:700;font-size:var(--t-h3);line-height:1.1}
+.rcard .verdict{font-family:var(--mono);font-size:var(--t-small);color:var(--warn);letter-spacing:.04em}
+.rcard p{font-size:var(--t-body);color:var(--soft);line-height:1.45}
+.rcard p b{color:var(--ink)}
+
+.depth-wrap{background:var(--panel2);border:1px solid var(--line);display:flex;flex-direction:column;min-height:0;padding:clamp(.7rem,1.6vw,1.2rem)}
+.depth-wrap svg{width:100%;height:min(40vh,320px)}
+.depth-cap{font-family:var(--mono);font-size:var(--t-small);color:var(--mut);line-height:1.5;margin-top:.6em}
+.depth-cap b{color:var(--warn)}
+
+.dlist{list-style:none;display:flex;flex-direction:column;gap:clamp(.4rem,1vh,.8rem)}
+.dlist li{font-size:var(--t-body);line-height:1.45;color:var(--soft);padding-left:1.4em;position:relative}
+.dlist li::before{content:"";position:absolute;left:0;top:.55em;width:.6em;height:.6em;background:var(--accent)}
+.dlist li b{color:var(--ink)} .dlist li em{font-style:normal;color:var(--accent);font-weight:600}
+
+.next{grid-template-columns:1fr 1fr}
+.track{background:var(--panel);border:1px solid var(--line);padding:clamp(.85rem,2vw,1.4rem);display:flex;flex-direction:column;gap:.5em;border-top:3px solid var(--accent)}
+.track.p2{border-top-color:var(--cool)}
+.track .badge{font-family:var(--mono);font-size:var(--t-small);letter-spacing:.1em;text-transform:uppercase;color:var(--accent)}
+.track.p2 .badge{color:var(--cool)}
+.track .big{font-family:var(--disp);font-weight:900;font-size:clamp(1.8rem,4.2vw,3rem);line-height:.85;color:var(--accent)}
+.track.p2 .big{color:var(--cool)}
+.track h3{font-family:var(--disp);font-weight:700;font-size:var(--t-h3)}
+.track p{font-size:var(--t-body);color:var(--soft);line-height:1.45}
+.foot{font-family:var(--mono);font-size:var(--t-small);color:var(--mut);letter-spacing:.03em}
+
+.progress{position:fixed;top:0;left:0;height:3px;width:0;background:var(--accent);z-index:100;transition:width .2s}
+.nav-dots{position:fixed;right:clamp(.6rem,1.4vw,1.3rem);top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:.6rem;z-index:100}
+.nav-dots button{width:9px;height:9px;border-radius:50%;border:1px solid var(--dim);background:transparent;cursor:pointer;padding:0;transition:all .25s}
+.nav-dots button.active{background:var(--accent);border-color:var(--accent);transform:scale(1.35)}
+.hint{position:fixed;bottom:clamp(.5rem,1.4vh,1rem);left:50%;transform:translateX(-50%);font-family:var(--mono);font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);z-index:100}
+</style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+<nav class="nav-dots" id="navDots"></nav>
+<div class="hint">← → / scroll · 8 slides</div>
+
+<!-- ===== 1 · TITLE ===== -->
+<section class="slide title-slide" id="s1">
+  <div class="title-top"><span><span class="l">Clann</span> · CV / Detection</span><span>Weekly report · ending 19 Jun 2026</span></div>
+  <div class="title-mid">
+    <div class="title-rule reveal"></div>
+    <h1 class="reveal">Goal detection &amp; ground&#8209;truth: <span class="a">where we are, what's next</span></h1>
+    <p class="title-syn reveal">Two workstreams on the fixed-camera 5-a-side demo game. <b>(1)</b> Took the goal detector to a full-game assessment, mapped the accuracy ceiling, and made the recall-vs-precision tradeoff explicit. <b>(2)</b> Shipped a ground-truth system that lets the model learn from every false alarm — all 7 planned steps done.</p>
+  </div>
+  <div class="title-foot reveal"><span>Game <b>ca90e7e9</b></span><span>2 workstreams</span><span><b>20</b> commits</span><span>8 slides</span></div>
+</section>
+
+<!-- ===== 2 · AT A GLANCE ===== -->
+<section class="slide" id="s2">
+  <div class="meta"><span><span class="l">At a glance</span></span><span>The week in one view</span><span class="idx">0<b>2</b> / 08</span></div>
+  <div class="head"><h1 class="reveal">Two parallel workstreams on the demo game</h1></div>
+  <div class="body-area">
+    <div class="grid ws-grid">
+      <div class="ws reveal">
+        <span class="tag">Workstream 01 · goal detection</span>
+        <h3>From clips to the whole game</h3>
+        <p>Ran the detector densely across the full 37-minute match, ran an exhaustive AI second-stage pilot, and pinned exactly where — and why — accuracy plateaus.</p>
+        <span class="status">100% of goals caught · ceiling identified</span>
+      </div>
+      <div class="ws cool reveal">
+        <span class="tag">Workstream 02 · ground truth</span>
+        <h3>Learning from every mistake</h3>
+        <p>Rebuilt label storage so <span class="cm">every</span> firing — including false alarms with no known goal — can be reviewed and fed into the next model.</p>
+        <span class="status">all 7 planned steps shipped</span>
+      </div>
+    </div>
+    <div class="through reveal">The thread: <b>find the real accuracy ceiling, then build the data system rich enough to climb it</b> — learn from every firing, not just the obvious goals.</div>
+  </div>
+</section>
+
+<!-- ===== 3 · RESULTS ===== -->
+<section class="slide" id="s3">
+  <div class="meta"><span><span class="l">Results</span> · full 37-minute game</span><span>Goal detection</span><span class="idx">0<b>3</b> / 08</span></div>
+  <div class="head"><h1 class="reveal">Every goal caught. The work now is <span class="w">cutting false alarms.</span></h1></div>
+  <div class="body-area">
+    <div class="grid main">
+      <div class="col">
+        <div class="grid stats">
+          <div class="stat reveal"><div class="v">17/17</div><div class="l"><b>Goals caught</b> — 100% recall on the dense full-game scan</div></div>
+          <div class="stat s2 reveal"><div class="v">0.55</div><div class="l"><b>Real-game F1</b> at full recall — the honest deployment number</div></div>
+          <div class="stat s3 reveal"><div class="v">0.82</div><div class="l"><b>Curated-clip F1</b> — flattering; never saw open play</div></div>
+        </div>
+        <div class="panel l-accent reveal"><h3>What changed this week</h3>
+          <p>Moved from curated test clips to a <b>dense scan of the entire game</b>. Recall is solved — <em>we miss nothing</em>. Precision is the whole problem: the goal-mouth detector also fires on goal kicks, keeper distribution and goalmouth scrambles.</p></div>
+        <div class="panel l-warn reveal"><h3>Honest accounting</h3>
+          <p>The 0.82 came from clips that never contained open play; on the real game the deployable number is <b>0.55</b>. We track the true figure, not the flattering one.</p></div>
+      </div>
+      <div class="col">
+        <div class="fig reveal">
+          <img src="__IMG_HERO__" alt="Full-game frame with goal-mouth region overlaid">
+          <div class="cap">Now running on the full game at every frame. Ball coverage 79% — the model is not the bottleneck; the geometry is.</div>
+          <div class="legend">
+            <span><i class="dot" style="background:#c6ff3a"></i>Goal-mouth region</span>
+            <span><i class="dot" style="background:#ff6a4d"></i>Billboards → depth cue (next)</span>
+            <span><i class="dot" style="background:#9aa2ad"></i>Cage netting</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 4 · RECALL DECISION ===== -->
+<section class="slide" id="s4">
+  <div class="meta"><span><span class="l">Decision</span> · how we tune</span><span>Why we don't chase the top score</span><span class="idx">0<b>4</b> / 08</span></div>
+  <div class="head"><h1 class="reveal">A missed goal is the one error we won't accept</h1></div>
+  <div class="body-area">
+    <div class="grid main">
+      <div class="col">
+        <div style="padding:0;background:transparent;border:none">
+        <table>
+          <thead><tr><th>Tuning option</th><th>Recall</th><th>F1</th><th>Decision</th></tr></thead>
+          <tbody>
+            <tr class="ship reveal"><td>Shipped detector</td><td class="r rc">100%</td><td class="r">0.55</td><td><span class="pill ok">shipped — best at 100%</span></td></tr>
+            <tr class="drop reveal"><td>Stricter shot filter</td><td class="r">94%</td><td class="r">0.58</td><td><span class="pill no">rejected — drops a goal</span></td></tr>
+            <tr class="drop reveal"><td>+ kickoff confirmation</td><td class="r">94%</td><td class="r">0.65</td><td><span class="pill no">deferred — drops a goal</span></td></tr>
+          </tbody>
+        </table>
+        </div>
+      </div>
+      <div class="col">
+        <div class="panel l-warn reveal"><h3>The trap in the numbers</h3>
+          <p><b>Higher F1 scores exist — but every one buys the gain by missing a real goal.</b> Those are a recall trade, not real improvement, and they wouldn't survive the next game's mix of goals and false alarms.</p></div>
+        <div class="panel l-accent reveal"><h3>Our rule</h3>
+          <p>Hold <em>recall at 100%</em> as a hard constraint. Any score that costs a goal is a warning sign, not a win — so the gains we keep are real precision, not a lucky swap on one game.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 5 · RULED OUT ===== -->
+<section class="slide" id="s5">
+  <div class="meta"><span><span class="l">Diligence</span> · closed avenues</span><span>Tested &amp; ruled out — with evidence</span><span class="idx">0<b>5</b> / 08</span></div>
+  <div class="head"><h1 class="reveal">What we tried, ruled out, and why</h1></div>
+  <div class="body-area">
+    <div class="grid ruled">
+      <div class="rcard reveal"><span class="verdict">▪ 2nd stage · parked</span><div class="h">AI video-verifier</div>
+        <p>Bolted a vision-language model <b>on top of the detector's firings</b> as a second pass — "did the ball end up in the net?" — to overturn the false alarms. <b>5 model/prompt variants all stalled at ~0.80</b>: the cage netting fills the frame, so models hallucinate "in the net" for wide shots. The limit is the footage, not the model.</p></div>
+      <div class="rcard reveal"><span class="verdict">▪ backwards here</span><div class="h">"A shot is fast"</div>
+        <p>Inverted in 5-a-side: real goals are <b>close-range rolls (slow)</b>; the false alarms are clearances whipping across the mouth (fast). A speed filter would kill real goals first.</p></div>
+      <div class="rcard reveal"><span class="verdict">▪ nothing to fix</span><div class="h">Trajectory gap-filling</div>
+        <p>The ball is already tracked through <b>23–26 of 26</b> approach frames into every goal. There are no gaps to reconstruct — the data is already dense.</p></div>
+    </div>
+    <div class="panel l reveal"><p style="color:var(--mut);font-family:var(--mono);font-size:var(--t-small);line-height:1.6">Each dead end is documented with its measured failure mode — so the team never re-spends budget on it. A ruled-out avenue is a result, not a loss.</p></div>
+  </div>
+</section>
+
+<!-- ===== 6 · DEPTH CEILING ===== -->
+<section class="slide" id="s6">
+  <div class="meta"><span><span class="l">The opportunity</span> · biggest lever</span><span>The accuracy ceiling</span><span class="idx">0<b>6</b> / 08</span></div>
+  <div class="head"><h1 class="reveal">The ceiling is <span class="w">depth</span> — and it's the biggest jump available</h1></div>
+  <div class="body-area">
+    <div class="grid main">
+      <div class="col">
+        <div class="depth-wrap reveal">
+          <svg viewBox="0 0 520 260" preserveAspectRatio="xMidYMid meet" aria-label="Side view: one camera cannot tell a ball on the line from a ball over the line">
+            <defs><marker id="ar" markerWidth="7" markerHeight="7" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#5aa9e6"/></marker></defs>
+            <line x1="20" y1="210" x2="500" y2="210" stroke="#3a4150" stroke-width="2"/>
+            <text x="20" y="232" fill="#6b7280" font-family="monospace" font-size="12">pitch (side view)</text>
+            <line x1="400" y1="210" x2="400" y2="120" stroke="#9aa2ad" stroke-width="2"/>
+            <line x1="400" y1="120" x2="430" y2="120" stroke="#9aa2ad" stroke-width="2"/>
+            <text x="372" y="252" fill="#9aa2ad" font-family="monospace" font-size="11">goal line</text>
+            <circle cx="55" cy="95" r="9" fill="#c6ff3a"/>
+            <text x="40" y="78" fill="#c6ff3a" font-family="monospace" font-size="12">camera</text>
+            <circle cx="384" cy="196" r="8" fill="#54d68a"/><text x="344" y="184" fill="#54d68a" font-family="monospace" font-size="11">goal</text>
+            <circle cx="416" cy="196" r="8" fill="#ff6a4d"/><text x="426" y="184" fill="#ff6a4d" font-family="monospace" font-size="11">save</text>
+            <line x1="55" y1="95" x2="384" y2="196" stroke="#5aa9e6" stroke-width="1.5" stroke-dasharray="4 3" marker-end="url(#ar)"/>
+            <line x1="55" y1="95" x2="416" y2="196" stroke="#5aa9e6" stroke-width="1.5" stroke-dasharray="4 3" opacity=".6"/>
+            <text x="120" y="150" fill="#5aa9e6" font-family="monospace" font-size="11">≈ same image position</text>
+          </svg>
+          <div class="depth-cap"><b>From one flat view, "on the line" and "over the line" look identical.</b> That single ambiguity is the source of the remaining false alarms.</div>
+        </div>
+      </div>
+      <div class="col">
+        <div class="panel l-warn reveal"><h3>Why the false alarms remain</h3>
+          <p>Keeper saves and just-wide shots cross the goal-mouth region but not the line. A single camera plane can't resolve depth at the line — so they look like goals.</p></div>
+        <div class="panel l-accent reveal"><h3>The plan — recover real depth geometry</h3>
+          <ul class="dlist" style="margin-top:.3em">
+            <li>Extrapolate the <b>off-screen goal corners</b> from on-pitch lines (we have prior code for this)</li>
+            <li>Use the <b>perimeter billboard lines</b> as a second geometry cue</li>
+            <li>Bring in the <b>unused interior pitch markings</b> near the goal</li>
+          </ul>
+          <p style="margin-top:.6em"><em>The single biggest accuracy jump available.</em></p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 7 · GROUND-TRUTH SYSTEM ===== -->
+<section class="slide" id="s7">
+  <div class="meta"><span><span class="l" style="color:var(--cool)">Shipped</span> · Workstream 02</span><span>A data system that learns from mistakes</span><span class="idx">0<b>7</b> / 08</span></div>
+  <div class="head"><div class="kick cool reveal">Match-anchored ground truth</div><h1 class="reveal">Every firing — even the false alarms — is now reviewable</h1></div>
+  <div class="body-area">
+    <div class="grid main">
+      <div class="col">
+        <div class="panel l-cool reveal"><h3>The unlock</h3>
+          <p>We could only ever review clips where a goal was <b>already known</b> to happen. The detector's <span class="cm">mistakes</span> — the most useful training signal — had nowhere to be filed.</p></div>
+        <div class="panel l-cool reveal"><h3>What we changed</h3>
+          <p>Anchored ground truth to the <b>match timeline</b>, so any moment the detector fires — goal or not — can be pulled up, reviewed and added to the training set. Verified labels now <b>survive re-runs</b> instead of being lost each round.</p></div>
+        <div class="panel l reveal"><p style="font-family:var(--mono);font-size:var(--t-small);color:var(--mut);line-height:1.6">This is the engine behind Workstream 01's next model — it lets the detector train on its own weak spots.</p></div>
+      </div>
+      <div class="col">
+        <div class="grid" style="grid-template-columns:1fr 1fr;gap:var(--gap)">
+          <div class="stat s3 reveal"><div class="v">132</div><div class="l"><b>Clips reviewed</b> in one pass — 31 goals + 101 false alarms</div></div>
+          <div class="stat s3 reveal"><div class="v">1,064</div><div class="l"><b>Verified frames</b> carried forward, lossless</div></div>
+          <div class="stat s3 reveal"><div class="v">~62</div><div class="l"><b>Automated tests</b> green, incl. survive-re-run check</div></div>
+          <div class="stat s3 reveal"><div class="v">7/7</div><div class="l"><b>Plan steps</b> shipped — complete</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 8 · NEXT STEPS ===== -->
+<section class="slide" id="s8">
+  <div class="meta"><span><span class="l">What's next</span></span><span>Two tracks, in parallel, on the demo game</span><span class="idx">0<b>8</b> / 08</span></div>
+  <div class="head"><h1 class="reveal">Next steps</h1></div>
+  <div class="body-area">
+    <div class="grid next">
+      <div class="track reveal">
+        <span class="badge">Track 01 · biggest jump</span>
+        <div class="big">Depth</div>
+        <h3>Recover real goal-line geometry</h3>
+        <p>Combine pitch evidence we already capture but don't use — extrapolated goal corners, perimeter billboard lines, unused markings — to resolve depth at the line. Directly removes the residual false alarms.</p>
+      </div>
+      <div class="track p2 reveal">
+        <span class="badge">Track 02 · in parallel</span>
+        <div class="big">Model</div>
+        <h3>Train the next ball detector</h3>
+        <p>Use the new ground-truth system to find where detection drops out and cut the false alarms those gaps cause — a feedback loop the match-anchored labels now make reliable.</p>
+      </div>
+    </div>
+    <div class="panel l reveal"><p class="foot">Cross-game validation and resuming the full automation loop follow once the demo game is solid.</p></div>
+  </div>
+</section>
+
+<script>
+/* Slide controller: keyboard / wheel / touch / dots / progress / reveals */
+class Deck{
+  constructor(){this.s=[...document.querySelectorAll('.slide')];this.i=0;this.lock=false;
+    this.dots();this.observe();this.keys();this.wheel();this.touch();this.prog();
+    const h=location.hash.match(/^#s(\d+)$/);if(h){const k=+h[1]-1;requestAnimationFrame(()=>setTimeout(()=>{
+      this.i=k;this.s[k].scrollIntoView({behavior:'auto',block:'start'});this.prog();this.sync();},80));}}
+  go(n){n=Math.max(0,Math.min(this.s.length-1,n));this.i=n;this.s[n].scrollIntoView({behavior:'smooth'});}
+  observe(){const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');
+    this.i=this.s.indexOf(e.target);this.prog();this.sync();}}),{threshold:.55});this.s.forEach(s=>io.observe(s));}
+  dots(){const n=document.getElementById('navDots');this.s.forEach((_,k)=>{const b=document.createElement('button');
+    b.setAttribute('aria-label','Slide '+(k+1));b.onclick=()=>this.go(k);n.appendChild(b);});this.d=[...n.children];this.sync();}
+  sync(){this.d.forEach((d,k)=>d.classList.toggle('active',k===this.i));}
+  prog(){document.getElementById('progress').style.width=(this.i/(this.s.length-1)*100)+'%';}
+  keys(){addEventListener('keydown',e=>{if(['ArrowRight','ArrowDown','PageDown',' '].includes(e.key)){e.preventDefault();this.go(this.i+1);}
+    else if(['ArrowLeft','ArrowUp','PageUp'].includes(e.key)){e.preventDefault();this.go(this.i-1);}
+    else if(e.key==='Home'){this.go(0);}else if(e.key==='End'){this.go(this.s.length-1);}});}
+  wheel(){addEventListener('wheel',e=>{if(this.lock||Math.abs(e.deltaY)<24)return;this.lock=true;
+    this.go(this.i+(e.deltaY>0?1:-1));setTimeout(()=>this.lock=false,750);},{passive:true});}
+  touch(){let y=null;addEventListener('touchstart',e=>y=e.touches[0].clientY,{passive:true});
+    addEventListener('touchend',e=>{if(y===null)return;const d=y-e.changedTouches[0].clientY;
+      if(Math.abs(d)>45)this.go(this.i+(d>0?1:-1));y=null;},{passive:true});}
+}
+addEventListener('DOMContentLoaded',()=>{document.querySelector('.slide').classList.add('visible');new Deck();});
+</script>
+</body>
+</html>
