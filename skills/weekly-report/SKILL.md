@@ -46,6 +46,21 @@ Then **Read** the KEY-FINDINGS.md and the dev-log entries for each active workst
 any plan docs that completed in the window. Group the commits into workstreams (usually 2–4)
 and find the **through-line** that connects them — the report's spine.
 
+### Commit dates lie about effort — anchor to the work, not the calendar
+
+Commit timestamps record when work *landed*, not when it was *done*. Work is often committed
+in batches a day or two after the experiments ran, which compresses the apparent timeline and
+**undersells the effort** — a real problem for a report read as a measure of output.
+
+- **Cross-check dev-log `created`/`updated` dates and file mtimes** against commit dates. If a
+  dev-log documents work dated before its commit, the work started earlier than the commit
+  implies. If in doubt about the true span, **ask the user** — they know which days they worked.
+- **Never use per-day commit counts as an effort meter** ("12 commits on Tuesday"). It reads
+  as activity but is just the commit calendar. Describe the *body of work*; keep commit hashes
+  only as inline provenance.
+- Anchor the narrative to what was built and learned over the window, not to the days commits
+  happened to be pushed.
+
 ## What the report must contain
 
 For each workstream, cover **all the work, including what failed**. A negative result is a
@@ -62,6 +77,15 @@ Specific things that are easy to under-report and must be included:
   behind a single headline number.
 - **Distrust small-n wins.** Report full-distribution numbers, not curated-sample peaks. If
   a result collapsed when evaluated honestly, that *is* the finding.
+- **Don't promote "blocked" to "dead".** A lever that failed once due to *fixable* input
+  quality (poor labels, sparse data, off-frame points) is an open opportunity, not exhausted.
+  Reserve "exhausted / dead end" for approaches with a *fundamental* measured failure. When
+  unsure which it is, **ask the user** — dev-logs written mid-experiment often overstate
+  finality, and the user's domain judgement overrides an inherited "dead end" claim.
+- **Check for contradictions before finalising.** Nothing labelled a dead end in the body
+  should reappear as a recommendation in Next Steps. If it does, the body is wrong — the
+  thing is open. Grep the draft for "dead", "exhausted", "ceiling", "wall" and reconcile each
+  against the Next Steps.
 - **Frame work as capability gained, not bug fixed**, where that's the truer description.
   "We extended the system so X is now possible" beats "we fixed a bug that lost X" when both
   are true — lead with what the team can now do.
