@@ -55,9 +55,10 @@ in batches a day or two after the experiments ran, which compresses the apparent
 - **Cross-check dev-log `created`/`updated` dates and file mtimes** against commit dates. If a
   dev-log documents work dated before its commit, the work started earlier than the commit
   implies. If in doubt about the true span, **ask the user** — they know which days they worked.
-- **Never use per-day commit counts as an effort meter** ("12 commits on Tuesday"). It reads
-  as activity but is just the commit calendar. Describe the *body of work*; keep commit hashes
-  only as inline provenance.
+- **No vanity activity counts.** Per-day commit counts ("12 commits on Tuesday"), but also
+  *any* raw activity tally — clips reviewed, files touched, experiments run. It reads as effort
+  and says nothing. Cite a number only when it carries an outcome; otherwise describe the body
+  of work. Keep commit hashes as inline provenance, not as a scoreboard.
 - Anchor the narrative to what was built and learned over the window, not to the days commits
   happened to be pushed.
 
@@ -89,6 +90,25 @@ Specific things that are easy to under-report and must be included:
 - **Frame work as capability gained, not bug fixed**, where that's the truer description.
   "We extended the system so X is now possible" beats "we fixed a bug that lost X" when both
   are true — lead with what the team can now do.
+- **Make every number self-explaining.** A bare `0.55 → 0.82` forces the reader to guess which
+  is the old one. Lead with the current value and label the prior: "0.82, up from 0.55 last
+  week". Same for counts and ratios — never an unlabelled arrow.
+- **Say what a metric means for the product, honestly.** Don't let a number imply a behaviour
+  it can't support: "88% precision" sold as "auto-confirm" hides that ~1 in 8 is wrong. State
+  the real implication (here: the top tier still needs a human glance). A flattering label on a
+  middling number is the fastest way to lose a technical reader's trust.
+
+## Write like a person, not an LLM
+
+Generated prose is a tell, and for a technical reader it quietly undercuts the work. Once the
+draft (and the deck) read right on substance, do a humanizing pass: run **`/humanize-text`** on
+the prose, or apply its checks by hand — the em-dash habit, stock triads ("deterministic,
+reproducible, iterable"), the "not X — but Y" see-saw, filler ("honest", "tangible", "the
+through-line", "the lesson for leadership"). Same voice for the report and the deck.
+
+One report-specific rule on top: **no self-applied milestone labels** ("the first viable
+product", "a real capability", "a genuine step-change") — they read as forced. State the result
+and let the reader award the label.
 
 ## Next steps — get the altitude right
 
@@ -149,11 +169,19 @@ at `deck-template.html` — copy it, don't rebuild the design from scratch.
    the full CSS, nav (keyboard/scroll/touch/dots), deep-link `#sN` hashes, and an `__IMG_HERO__`
    image placeholder.
 2. **Map the report into the slides**, one informative slide each (no 101 explainers — the
-   CEO knows the product; every slide carries new info):
-   Title → At a glance (2 workstreams + through-line) → Results (key metrics) → the key
-   Decision/tradeoff (e.g. the recall-vs-F1 table) → Ruled out, with evidence → the biggest
-   Opportunity (a diagram, not a weak photo) → what Shipped → Next steps. Drop the commit
-   hashes the report carries for provenance — a deck is for the screen.
+   CEO knows the product; every slide carries new info). A good spine: Results dashboard →
+   At a glance / through-line → How it works → the key Decision/tradeoff → what Shipped →
+   Next steps. Drop the commit hashes the report carries — a deck is for the screen.
+   - **Open with the result, not a label.** Slide 1 should be a compressed results dashboard —
+     the headline number(s) plus the key metrics — not a vague title or a self-applied milestone
+     ("first viable product"). Lead with what was achieved.
+   - **Fewer slides beats padding.** The 8-slide template is a ceiling, not a quota. Cut any
+     slide that's a tangent for a CEO (a parked R&D avenue, deep internals) and fold its one
+     line into a neighbour. When you remove one, renumber the `0N / 0M` meta indices, the
+     "N slides" text (hint + foot), and the section `id="sN"` so deep-links and nav stay correct.
+   - Numbers on a slide follow the report rule: lead with the current value, label the prior
+     ("0.82, up from 0.55"). If a metric table omits an obvious column the point needs (e.g.
+     precision next to recall/F1), add it — and use real numbers, not illustrative ones.
 3. **Frames must clearly show their subject.** Use a strong real frame for the hero; if a
    comparison frame doesn't clearly show the ball/subject, replace it with a labelled SVG
    diagram (as the depth-ceiling slide does). Never ship a frame where the point isn't visible.
@@ -163,7 +191,13 @@ at `deck-template.html` — copy it, don't rebuild the design from scratch.
    With scout-browse headless the reliable full-size capture is: open the file, then
    `scout-browse goto "<file>#sN"` (foreground) → screenshot. Plain scroll/nav-dot clicks
    fight `scroll-snap` and land between slides. Check for: empty space *inside* boxes (panels
-   must hug content, not stretch), text too small to read, and overflow.
+   must hug content, not stretch), text too small to read, and overflow. Also screenshot at a
+   phone width (~390) — dense slides overflow there.
+   - **Force a fresh load after every edit.** A hash-only `goto` does not reload the file, and
+     an `open` while a browser is already running can no-op and screenshot the *stale* page
+     (you'll "verify" old content). `close` then `open`. And a headless `resize` after load does
+     not faithfully re-evaluate media queries, so confirm responsive / `display:none` rules by
+     reading the CSS, not only by resizing.
 6. **Deliver:** offer to commit and to Taildrop it (`/drop`) to the user's device.
 
 ### Hard-won layout rules (baked into the template — keep them)
@@ -176,3 +210,7 @@ at `deck-template.html` — copy it, don't rebuild the design from scratch.
 - **Fixed-height media.** Images are banners (`height:min(46vh,360px)`), diagrams a fixed
   height — never `flex:1` stretched.
 - **Keep the honest tradeoffs** (recall-vs-F1 etc.) — the user wants those on a slide, not hidden.
+- **Mobile fallback.** The deck is desktop-first (scroll-snap, fixed-height slides), so dense
+  slides clip on a phone. At `@media (max-width:760px)` let slides flow — `height:auto;
+  overflow:visible; scroll-snap-type:none` — and hide the nav-dots/hint (they overlap edge
+  content). Baked into the template; keep it.

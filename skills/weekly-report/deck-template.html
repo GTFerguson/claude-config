@@ -36,7 +36,15 @@ img{max-width:100%;object-fit:cover}
 @media (max-height:760px){:root{--pad:clamp(.8rem,2.2vw,1.6rem);--gap:clamp(.45rem,1.1vh,.8rem);
   --t-title:clamp(1.6rem,4vw,2.8rem);--t-h1:clamp(1.2rem,3vw,2rem);--t-metric:clamp(1.4rem,3.2vw,2.3rem)}}
 @media (max-height:620px){:root{--t-body:clamp(.7rem,1.1vw,.88rem);--t-small:.6rem}.nav-dots,.hint{display:none}}
-@media (max-width:760px){.main,.two,.stats,.ruled,.next,.ws-grid{grid-template-columns:1fr !important}.fig{min-height:34vh}}
+@media (max-width:760px){
+  html{scroll-snap-type:none}
+  .slide{height:auto;min-height:100dvh;overflow:visible;scroll-snap-align:none;padding-bottom:clamp(1.4rem,5vh,2.4rem)}
+  .body-area{justify-content:flex-start;padding-top:.4rem}
+  .main,.two,.stats,.ruled,.next,.ws-grid{grid-template-columns:1fr !important}
+  .fig{min-height:34vh}
+  .nav-dots,.hint{display:none}
+  .slide::before{mask-image:none;-webkit-mask-image:none;opacity:.3}
+}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms !important;transition-duration:.2s !important}html{scroll-behavior:auto}}
 
 .slide::before{content:"";position:absolute;inset:0;pointer-events:none;opacity:.5;
