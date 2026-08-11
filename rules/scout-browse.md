@@ -49,6 +49,37 @@ All output goes to `.scout-browse/` in the current directory:
 - `next-data-{timestamp}.json` — extracted `__NEXT_DATA__` (Next.js)
 - `screenshot-{timestamp}.png` — page screenshots
 - `console-{timestamp}.log` — browser console output
+- `chrome.log` — the browser's own stderr from the last launch, overwritten each
+  time. The only account of why a launch failed.
+
+## When it will not launch
+
+**A corrupt profile is the first thing to suspect, not the network or the port.**
+The persistent profile at `~/.scout/profiles/google` accumulates state, and a
+damaged one makes Chrome die on SIGTRAP within a second of starting — after it
+has already printed `DevTools listening`, which is why the failure can look like
+a connection problem.
+
+The launcher now names this: it reports how the browser died, quotes the last
+lines of `chrome.log`, and points at `--no-profile`. Confirm and fix in two
+steps:
+
+```bash
+scout-browse close                                   # clear stale state first
+scout-browse --headless --no-profile open <url>      # does a clean profile work?
+mv ~/.scout/profiles/google ~/.scout/profiles/google.broken   # if so, reset it
+```
+
+A fresh profile is rebuilt on the next launch. The cost is any logged-in
+session in the old profile, so check what is actually in it before assuming the
+reset is expensive — it is often already logged out:
+
+```bash
+sqlite3 "file:$HOME/.scout/profiles/google/Default/Cookies?mode=ro" \
+  "select name from cookies where name in ('SID','__Secure-1PSID');"
+```
+
+Do not spend a session bisecting a 250 MB profile directory. Reset it.
 
 ## Web Research
 
