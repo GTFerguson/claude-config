@@ -87,7 +87,7 @@ After editing rules or skills, commit and push — the changes are already live 
 |-------|---------|
 | [/code-intel](skills/code-intel/SKILL.md) | Orient with the nkrdn knowledge graph before diving into grep/read |
 | [/scout-browse](skills/scout-browse/SKILL.md) | Browser automation via Patchright with persistent profile and CAPTCHA solver |
-| [/playwright](skills/playwright/SKILL.md) | Browser automation via `playwright-cli` — superseded by `/scout-browse` |
+| [/playwright](skills/playwright/SKILL.md) | Browser automation via `playwright-cli` — fallback for when `/scout-browse` misbehaves |
 
 ## Task Prompts
 
