@@ -97,6 +97,21 @@ Specific things that are easy to under-report and must be included:
   it can't support: "88% precision" sold as "auto-confirm" hides that ~1 in 8 is wrong. State
   the real implication (here: the top tier still needs a human glance). A flattering label on a
   middling number is the fastest way to lose a technical reader's trust.
+- **Show the error count next to the success count — always.** "44/44 goals found" with the
+  false positives absent reads as hiding them, and the reader will notice. Give the full
+  denominator (total fires → real → wrong), put the FP count beside every N/N figure, and
+  translate the ratio into plain cost ("1 alert in 3 is wrong"). Recall-only headlines are the
+  most common way a report accidentally lies.
+- **Scope every claim to the data it was measured on.** A pathology measured on one game must
+  not be presented as a law of the system — name the game in the table header and say
+  explicitly where it does NOT apply ("the other three venues scored 1.000 on the same
+  models"). Generalising one venue's failure reads as nonsense to the person who knows the
+  other venues.
+- **Date every carried-forward measurement, and check it survived the window.** A number
+  quoted from an older doc ("109 crossings, 0 alerts") may predate this window's changes, in
+  which case citing it as current state is wrong, not just stale. Either re-derive it, or
+  present it as "last measured <date>, before X shipped — re-run pending". Dev-logs and
+  handoffs are full of these; the freshest-sounding figure is often the oldest.
 
 ## Write like a person, not an LLM
 
@@ -123,6 +138,16 @@ so they must be **strategic and highest-leverage**, framed by outcome and impact
   collapse to a single "follows once X is solid" line at the end.
 - If the user describes the real plan in conversation, that overrides whatever the logs
   imply was "next" — the logs record options, the user knows the priority.
+- **A documented option is not a plan.** Dev-logs and handoffs record candidate directions
+  ("a review-earned auto-confirm tier could…") that nobody has committed to. Putting one on
+  the Next Steps slide as a named track misstates the roadmap. Before the deck's next-steps
+  slide is final, confirm with the user: which items are actually being worked, and whether
+  they run **in parallel or in sequence** — sequencing carries real information (e.g. "the
+  next venue waits until precision holds, so failures stay attributable") and belongs on the
+  slide when it exists.
+- **State the real success criterion, even when it's soft.** If there is no target number,
+  say so plainly ("as low as we can get without over-investing") rather than inventing one —
+  a fabricated target reads as commitment and will be measured against later.
 
 ## Output
 
@@ -182,6 +207,22 @@ at `deck-template.html` — copy it, don't rebuild the design from scratch.
    - Numbers on a slide follow the report rule: lead with the current value, label the prior
      ("0.82, up from 0.55"). If a metric table omits an obvious column the point needs (e.g.
      precision next to recall/F1), add it — and use real numbers, not illustrative ones.
+   - **Slide 1 shows the errors, not just the wins.** Per-unit tiles carry the FP count beside
+     the N/N ("17/17 · 0 FP", "14/14 · 7 FP"), problem units get a visual mark (warn-coloured
+     border), and the synopsis gives the full funnel: total fires → real → wrong → overall
+     precision. Four all-green N/N tiles above a buried FP count is the "hiding it" pattern
+     the user will call out.
+   - **Bullets, not paragraph blocks.** A dense prose panel on a slide is a wall; the reader
+     scans, they don't read. Break every multi-sentence panel into 2–4 short bullets (the
+     template's `.dlist` with warn/cool colour variants). Panels that share a row with an
+     image fit ~3 bullets before clipping — `.fig` is `overflow:hidden`, so a fourth bullet
+     silently disappears.
+   - **Lead with the action, not the identifier.** Internal names (game UUIDs, run slugs)
+     mean nothing to the reader: "Next ground-truth game" is the headline, `a87b3071` the
+     sub-line — never the reverse. Trim filler from headlines ("Add the next…" → "Next…").
+   - **Split shipped work by kind**: whole new systems vs corrections to existing machinery.
+     "Built new" vs "tuned" is a distinction leadership actually uses; a flat feature list
+     buries it.
 3. **Frames must clearly show their subject.** Use a strong real frame for the hero; if a
    comparison frame doesn't clearly show the ball/subject, replace it with a labelled SVG
    diagram (as the depth-ceiling slide does). Never ship a frame where the point isn't visible.
@@ -198,7 +239,31 @@ at `deck-template.html` — copy it, don't rebuild the design from scratch.
      (you'll "verify" old content). `close` then `open`. And a headless `resize` after load does
      not faithfully re-evaluate media queries, so confirm responsive / `display:none` rules by
      reading the CSS, not only by resizing.
-6. **Deliver:** offer to commit and to Taildrop it (`/drop`) to the user's device.
+   - **Resize to desktop before judging layout.** A fresh headless launch opens at a small
+     default viewport, and the viewport can revert after a relaunch. Overlap/collision seen in
+     a small-viewport screenshot is often fine at 1600×1000 — do not "fix" layout from a
+     screenshot whose viewport you haven't confirmed. Sequence per check: `close` → `open` →
+     `resize 1600 1000` → `goto #sN` → screenshot.
+   - **The headless browser wedges after several navigations** — screenshots start timing out.
+     Don't keep retrying: `close`, relaunch, continue. Budget for this by batching edits and
+     verifying several slides per launch.
+6. **Deliver:** offer to commit. Do NOT reopen the deck in the user's browser after every
+   edit — once they have it open they'll refresh; repeated `xdg-open` calls are noise. Open it
+   only when first delivering or when asked.
+
+### Iterating with the user (the deck review loop)
+
+The first render is a draft; expect a slide-by-slide review. Rules learned from those reviews:
+
+- **Results measured after the report was written don't go in silently.** Present new numbers
+  to the user in conversation first ("tell me what they are before putting them in the
+  report") and let them decide if/how the report and deck change. If a new result makes an
+  existing slide half-wrong (e.g. a "biggest lever" that has since been half-disproven), flag
+  the staleness to the user rather than silently rewriting — the deck may already have been
+  seen by its audience.
+- Apply each structural correction (bullets, scoping, FP visibility) to the *whole deck*, not
+  just the slide it was raised on — the user is teaching a pattern, and asking "same pass on
+  slides 5–7?" beats waiting to be told slide by slide.
 
 ### Hard-won layout rules (baked into the template — keep them)
 
