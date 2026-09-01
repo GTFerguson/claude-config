@@ -58,6 +58,16 @@ Use the alphaxiv MCP tools to find high-quality, recent academic research:
 
 **Always search alphaxiv first.** It has 2.5M+ papers and surfaces the latest research that WebSearch may miss.
 
+**Budget: 2 `discover_papers` calls per message.** Cover every facet of the topic in one broad call rather than spending the budget on several narrow ones. Parallel `answer_pdf_queries` calls are not subject to this and resolve as one round.
+
+**Use only terms the user or a prior tool result actually used** in `keywords`. Guessed expansions of a short name degrade results — for "compare GRPO and DAPO" the keywords are `["GRPO", "DAPO"]` and nothing more.
+
+**Name canonical papers directly rather than searching for them.** `answer_pdf_queries` resolves a paper by title, so a paper you already know ("Deep Sets", "Recurrent Model-Free RL is a Strong Baseline for Many POMDPs") needs no discovery call and no ID lookup.
+
+**Watch for cross-field keyword collision.** Terms that mean different things in different subfields return the wrong literature entirely — "memory", "recurrent" and "belief state" surface LLM-agent-memory papers rather than POMDP RL. If a search drifts, stop reformulating it and name the canonical papers instead.
+
+**Record what you did *not* read.** When a paper stays on the "worth reviewing" list unread, say so explicitly in the doc rather than letting a reader assume the list was cleared. An unread source silently presented as checked is the exact failure PROVEN's Provenance principle exists to prevent.
+
 ### 3b. PubMed E-utilities (Primary — Biomedical/Health Science)
 
 Use PubMed's free API for biomedical, health science, exercise physiology, and clinical research not covered by arXiv. No auth required.
@@ -141,9 +151,10 @@ tags: [relevant, tags]
 4. **If you wrote to common-knowledge**, commit it as its own clean change:
    ```bash
    cd /home/gary/projects/common-knowledge
-   git add -A
+   git add <cluster>/ README.md
    git commit -m "<topic cluster>: <one-line summary>"
    ```
+   Stage by explicit path — never `git add -A`, which sweeps up unrelated in-progress edits.
    One commit per research session or topic cluster. Do not batch unrelated topics.
 5. **Indexing is automatic — do not rebuild nkrdn yourself.** The Stop hook
    reindexes the current repo and common-knowledge into the workspace graph when
