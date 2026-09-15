@@ -128,3 +128,28 @@ Guards: resumes once per `/handoff` (a marker in `~/.cache/cade-resume/`), only
 for briefs newer than `CADE_RESUME_WINDOW` seconds (default 1800), and never for
 `claude -p`/non-interactive use. `resume` is a manual command to jump back into
 the latest brief on demand.
+
+`shell/bin/claude` runs work projects under a separate login. Claude Code keeps
+its login in its config directory, so work sessions get
+`CLAUDE_CONFIG_DIR=~/.claude-work` (an enterprise account) and everything else
+uses `~/.claude` (personal). It is picked from the launch directory:
+`CLAUDE_WORK_PATHS` lists the work trees. It is an executable placed ahead of the
+real binary on PATH, not a shell function, because CADE starts sessions with
+`command claude`, which skips functions. An already set `CLAUDE_CONFIG_DIR`
+always wins. `shell/claude-profile.sh` puts it on PATH and adds `claude-work` /
+`claude-personal` to force a profile:
+
+```bash
+[ -f ~/.claude/shell/claude-profile.sh ] && . ~/.claude/shell/claude-profile.sh
+```
+
+`~/.claude-work` symlinks `CLAUDE.md`, `rules`, `skills`, `prompts`, `shell` and
+the settings files back here, so config is still edited in one place. Login,
+MCP servers (`.claude.json`), plugins and history are per profile. Project
+memory is shared per project by symlinking its `projects/<key>` directory.
+
+CADE chooses the account itself for its own tabs, from profiles in
+`~/.config/cade/claude.toml`, and sets `CLAUDE_CONFIG_DIR` in the tab's
+environment, so the launcher then just passes it through. The launcher still
+covers `claude` typed in a terminal outside CADE. The work trees are listed in
+both places: add a new one to `claude.toml` and to `CLAUDE_WORK_PATHS`.

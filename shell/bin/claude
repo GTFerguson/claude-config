@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+# Claude Code launcher that picks the account from the launch directory.
+#
+# Claude Code keeps its login inside its config directory, so pointing
+# CLAUDE_CONFIG_DIR at a second directory gives an independent login. This is an
+# executable ahead of the real binary on PATH rather than a shell function
+# because launchers such as CADE run `command claude`, which skips functions.
+#
+# Force a profile with CLAUDE_PROFILE=work|personal. An already exported
+# CLAUDE_CONFIG_DIR always wins, so a session's own subprocesses keep its account.
+
+work_config_dir="${CLAUDE_WORK_CONFIG_DIR:-$HOME/.claude-work}"
+# Space-separated directory trees that belong to work
+work_paths="${CLAUDE_WORK_PATHS:-$HOME/projects/airplai}"
+
+profile="${CLAUDE_PROFILE:-}"
+if [ -z "$profile" ]; then
+    profile=personal
+    for p in $work_paths; do
+        # Trailing slash on both sides so ~/projects/airplai-other is not matched
+        case "$PWD/" in "$p"/*) profile=work; break ;; esac
+    done
+fi
+
+if [ "$profile" = work ] && [ -z "${CLAUDE_CONFIG_DIR:-}" ]; then
+    export CLAUDE_CONFIG_DIR="$work_config_dir"
+fi
+
+# Hand off to the first `claude` on PATH that is not this script
+self=$(readlink -f "$0")
+IFS=:
+for dir in $PATH; do
+    candidate="$dir/claude"
+    if [ -x "$candidate" ] && [ "$(readlink -f "$candidate")" != "$self" ]; then
+        unset IFS
+        exec "$candidate" "$@"
+    fi
+done
+echo "claude: no Claude Code binary found on PATH besides this launcher" >&2
+exit 127
