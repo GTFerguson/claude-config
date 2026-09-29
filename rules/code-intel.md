@@ -1,6 +1,6 @@
 # nkrdn — Code Knowledge Graph
 
-nkrdn indexes code structure (symbols, relationships, inheritance) and project documentation into a queryable knowledge graph. A unified workspace graph at `~/.nkrdn/workspace/graph.ttl` covers all indexed repos. Use it to orient before reading source.
+nkrdn indexes code structure (symbols, relationships, inheritance) and project documentation into a queryable knowledge graph. Each repo has one graph in `<repo>/.nkrdn/`, kept current by CADE, editor hooks, manual `nkrdn rebuild` and `nkrdn workspace rebuild` alike. Use it to orient before reading source.
 
 ## When to Use
 
@@ -8,7 +8,7 @@ nkrdn indexes code structure (symbols, relationships, inheritance) and project d
 |---|---|
 | **Design/conceptual** — "How does X work?", "Why is X designed this way?" | `nkrdn search "X" --source docs` → read the design doc → verify in code |
 | **Structure/relationships** — "What depends on X?", "What would break if I changed X?", "What does X inherit?", "How is the code organized?" | `nkrdn lookup X` → then `usages`, `details`, `tree`, or `scope` as needed |
-| **Cross-project** — "What repos use this?", "What changed across projects?" | `nkrdn workspace diff --since 7d` or query the workspace graph directly |
+| **Cross-project** — "What repos use this?", "What changed across projects?" | `nkrdn workspace diff --since 7d`, `nkrdn workspace stats`, or `nkrdn search "X" --source docs` (spans all workspace repos) |
 | **Location/implementation** — "Find where X is", "How is X implemented?" | Grep or Read directly — nkrdn has structure, not code |
 
 ## Commands
@@ -39,7 +39,7 @@ nkrdn indexes code structure (symbols, relationships, inheritance) and project d
 | `workspace diff --since 7d --json` | JSON output for programmatic use |
 | `workspace list` | Show repos and their index status |
 
-The workspace graph is one graph with per-repo named graphs. Running `nkrdn` from inside a project queries the workspace graph but prioritises the current repo's symbols. Cross-repo dependency edges are resolved transparently.
+Running `nkrdn` from inside a repo queries that repo's graph; doc search also covers the other repos registered in the workspace. `nkrdn workspace rebuild` indexes every registered repo into its own `.nkrdn/` and records cross-repo dependency edges in `~/.nkrdn/workspace/deps.ttl`. Running from a folder of repos that is not itself a repo (e.g. `~/projects`) indexes nothing — cd into a repo.
 
 ## Budget
 
