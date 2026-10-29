@@ -4,6 +4,15 @@ Documentation is viewed using Obsidian.md. Follow these rules to ensure proper r
 
 ## Required Rules
 
+### Filenames Are Lowercase Kebab-Case
+
+Name every doc in lowercase words joined by hyphens: `ebay-integration.md`, not
+`EBAY_INTEGRATION.md` or `EbayIntegration.md`. All-caps names shout in Obsidian's
+file tree and wiki-links, and Gary dislikes them. Only conventional root files
+keep their usual names (`README.md`, `AGENTS.md`, `CLAUDE.md`, `CHANGELOG.md`,
+`LICENSE`). When an existing folder uses capitals, name the new doc in kebab-case
+anyway rather than matching its neighbours.
+
 ### Tables Must Have Blank Lines Above Them
 
 Obsidian.md requires a blank line before markdown tables for them to render correctly.
